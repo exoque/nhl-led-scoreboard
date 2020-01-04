@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import nhl_api_parser as nhlparser
 
+
 class Data:
     def __init__(self, config):
 

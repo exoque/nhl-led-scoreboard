@@ -1,5 +1,6 @@
 import requests
 import datetime
+from goal import Goal
 from utils import convert_time
 
 NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
@@ -45,6 +46,25 @@ def fetch_live_stats(link):
     response = requests.get(url)
     stuff = response.json()
     try:
+
+        all_plays = stuff['liveData']['plays']['allPlays']
+        scoring_plays_index = stuff['liveData']['plays']['scoringPlays']
+        scoring_plays = []
+        goals = []
+
+        for scoring_play_index in scoring_plays_index:
+            scoring_plays.append(all_plays[scoring_play_index])
+
+        for scoring_play in scoring_plays:
+            scorer = scoring_play['players'][0]['player']['fullName']
+            assist1 = ''
+            assist2 = ''
+            if scoring_play['players'][1]['player'] == 'Assist':
+                assist1 = scoring_play['players'][1]['player']['fullName']
+                if scoring_play['players'][2]['player'] == 'Assist':
+                    assist2 = scoring_play['players'][2]['player']['fullName']
+            goals.append(Goal(scorer, assist1, assist2))
+
         current_period = int(stuff['liveData']['linescore']['currentPeriod'])
         home_sog = int(stuff['liveData']['linescore']['teams']['home']['shotsOnGoal'])
         away_sog = int(stuff['liveData']['linescore']['teams']['away']['shotsOnGoal'])
@@ -54,7 +74,7 @@ def fetch_live_stats(link):
             time_remaining = stuff['liveData']['linescore']['currentPeriodTimeRemaining']
         except KeyError:
             time_remaining = "00:00"
-        return current_period, home_sog, away_sog, home_powerplay, away_powerplay, time_remaining
+        return current_period, home_sog, away_sog, home_powerplay, away_powerplay, time_remaining, goals
     except requests.exceptions.RequestException:
         print("Error encountered, Can't reach the NHL API")
 

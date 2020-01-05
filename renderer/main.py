@@ -297,6 +297,12 @@ class MainRenderer:
             time.sleep(0.1)
 
     def _draw_off_day(self):
-        self.draw.text((0, -1), 'NO GAME TODAY', font=self.font_mini)
+        team_logo_pos = self.screen_config.team_logos_pos[str(self.data.fav_team_id)]['away']
+        team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[self.data.fav_team_id]['abbreviation']))
+        self.image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
+
+        text = 'NO GAME\nTODAY'
+        self.draw.multiline_text((28, 8), text, fill=(255, 255, 255), font=self.font_mini, align="center")
+
         self.render_surface.render(self.image)
 

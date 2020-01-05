@@ -76,32 +76,12 @@ class MainRenderer:
             # Center the game time on screen.
             game_time_pos = center_text(self.font_mini.getsize(game_time)[0], 32)
 
-            # Set the position of each logo
-            away_team_logo_pos = self.screen_config.team_logos_pos[str(overview['away_team_id'])]['away']
-            home_team_logo_pos = self.screen_config.team_logos_pos[str(overview['home_team_id'])]['home']
-
-            # Open the logo image file
-            away_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['away_team_id']]['abbreviation']))
-            home_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['home_team_id']]['abbreviation']))
-
             # Draw the text on the Data image.
             self.draw.text((22, 1), 'TODAY', font=self.font_mini)
             self.draw.multiline_text((game_time_pos, 8), game_time, fill=(255, 255, 255), font=self.font_mini, align="center")
             self.draw.text((25, 16), 'VS', font=self.font)
 
-            # Put the data on the canvas
-            #self.canvas.SetImage(self.image, 0, 0)
-
-            # Put the images on the canvas
-            #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-            #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
-
-            self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
-            self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
-
-            # Load the canvas on screen.
-            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
-            #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
+            self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
             self.render_surface.render(self.image)
 
             # Refresh the Data image.
@@ -158,31 +138,12 @@ class MainRenderer:
                 score_position = center_text(self.font.getsize(score)[0], 32)
                 period_position = center_text(self.font_mini.getsize(period)[0], 32)
 
-                # Set the position of each logo on screen.
-                away_team_logo_pos = self.screen_config.team_logos_pos[str(overview['away_team_id'])]['away']
-                home_team_logo_pos = self.screen_config.team_logos_pos[str(overview['home_team_id'])]['home']
-
-                # Open the logo image file
-                away_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['away_team_id']]['abbreviation']))
-                home_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['home_team_id']]['abbreviation']))
-
                 # Draw the text on the Data image.
                 self.draw.multiline_text((score_position, 15), score, fill=(255, 255, 255), font=self.font, align="center")
                 self.draw.multiline_text((period_position, 1), period, fill=(255, 255, 255), font=self.font_mini, align="center")
                 self.draw.multiline_text((time_period_pos, 8), time_period, fill=(255, 255, 255), font=self.font_mini, align="center")
 
-                # Put the data on the canvas
-                #self.canvas.SetImage(self.image, 0, 0)
-
-                # Put the images on the canvas
-                #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-                #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
-                self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
-                self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
-
-                # Load the canvas on screen.
-                #self.canvas = self.matrix.SwapOnVSync(self.canvas)
-                #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
+                self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
                 self.render_surface.render(self.image)
 
                 # Refresh the Data image.
@@ -235,26 +196,7 @@ class MainRenderer:
                 period_position = center_text(self.font_mini.getsize(period)[0], 32)
                 self.draw.multiline_text((period_position, 11), period, fill=(255, 255, 255), font=self.font_mini,align="center")
 
-            # Open the logo image file
-            away_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['away_team_id']]['abbreviation']))
-            home_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['home_team_id']]['abbreviation']))
-
-            # Set the position of each logo on screen.
-            away_team_logo_pos = self.screen_config.team_logos_pos[str(overview['away_team_id'])]['away']
-            home_team_logo_pos = self.screen_config.team_logos_pos[str(overview['home_team_id'])]['home']
-
-            # Put the data on the canvas
-            #self.canvas.SetImage(self.image, 0, 0)
-
-            # Put the images on the canvas
-            #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-            #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
-            self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
-            self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
-
-            # Load the canvas on screen.
-            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
-            #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
+            self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
             self.render_surface.render(self.image)
 
             # Refresh the Data image.
@@ -264,8 +206,6 @@ class MainRenderer:
         else:
             # (Need to make the screen run on it's own) If connection to the API fails, show bottom red line and refresh in 1 min.
             self.draw.line((0, 0) + (self.width, 0), fill=128)
-            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
-            #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
             self.render_surface.render(self.image)
             time.sleep(60)  # sleep for 1 min
 
@@ -297,12 +237,18 @@ class MainRenderer:
             time.sleep(0.1)
 
     def _draw_off_day(self):
-        team_logo_pos = self.screen_config.team_logos_pos[str(self.data.fav_team_id)]['away']
-        team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[self.data.fav_team_id]['abbreviation']))
-        self.image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
+        self._draw_team_logo(self.image, 'away', self.data.fav_team_id)
 
         text = 'NO GAME\nTODAY'
         self.draw.multiline_text((28, 8), text, fill=(255, 255, 255), font=self.font_mini, align="center")
 
         self.render_surface.render(self.image)
 
+    def _draw_team_logo(self, image, team_type, team_id):
+        team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
+        team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[team_id]['abbreviation']))
+        image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
+
+    def _draw_team_logos(self, image, home_team_id, away_team_id):
+        self._draw_team_logo(image, 'home', home_team_id)
+        self._draw_team_logo(image, 'away', away_team_id)

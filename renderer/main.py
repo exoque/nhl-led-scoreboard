@@ -41,19 +41,19 @@ class MainRenderer:
 
         if self.data.fav_team_game_today == 1:
             debug.info('Scheduled State')
-            self._draw_pregame()
+            self.__draw_pregame()
             time.sleep(1800)
         elif self.data.fav_team_game_today == 2:
             debug.info('Pre-Game State')
-            self._draw_pregame()
+            self.__draw_pregame()
             time.sleep(60)
         elif (self.data.fav_team_game_today == 3) or (self.data.fav_team_game_today == 4):
             debug.info('Live State')
             # Draw the current game
-            self._draw_game()
+            self.__draw_game()
         elif (self.data.fav_team_game_today == 5) or (self.data.fav_team_game_today == 6) or (self.data.fav_team_game_today == 7):
             debug.info('Final State')
-            self._draw_post_game()
+            self.__draw_post_game()
             #sleep an hour
             time.sleep(3600)
         debug.info('ping render_game')
@@ -61,10 +61,10 @@ class MainRenderer:
     def __render_off_day(self):
 
         debug.info('ping_day_off')
-        self._draw_off_day()
+        self.__draw_off_day()
         time.sleep(21600) #sleep 6 hours
 
-    def _draw_pregame(self):
+    def __draw_pregame(self):
 
         if self.data.get_schedule() != 0:
 
@@ -73,15 +73,8 @@ class MainRenderer:
             # Save when the game start
             game_time = overview['game_time']
 
-            # Center the game time on screen.
-            game_time_pos = center_text(self.font_mini.getsize(game_time)[0], 32)
-
-            # Draw the text on the Data image.
-            self.draw.text((22, 1), 'TODAY', font=self.font_mini)
-            self.draw.multiline_text((game_time_pos, 8), game_time, fill=(255, 255, 255), font=self.font_mini, align="center")
-            self.draw.text((25, 16), 'VS', font=self.font)
-
-            self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
+            self.__draw_status_text('TODAY', game_time, 'VS')
+            self.__draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
             self.render_surface.render(self.image)
 
             # Refresh the Data image.
@@ -98,7 +91,7 @@ class MainRenderer:
             self.image = Image.new('RGB', (self.width, self.height))
             self.draw = ImageDraw.Draw(self.image)
 
-    def _draw_game(self):
+    def __draw_game(self):
         self.data.refresh_overview()
         overview = self.data.overview
         home_score = overview['home_score']
@@ -126,30 +119,20 @@ class MainRenderer:
                 # Use this code if you want the goal animation to run for both team's goal.
                 # Run the goal animation if there is a goal.
                 if overview['home_score'] > home_score or overview['away_score'] > away_score:
-                   self._draw_goal()
+                   self.__draw_goal()
 
                 # Prepare the data
                 score = '{}-{}'.format(overview['away_score'], overview['home_score'])
                 period = overview['period']
                 time_period = overview['time']
 
-                # Set the position of the information on screen.
-                time_period_pos = center_text(self.font_mini.getsize(time_period)[0], 32)
-                score_position = center_text(self.font.getsize(score)[0], 32)
-                period_position = center_text(self.font_mini.getsize(period)[0], 32)
-
-                # Draw the text on the Data image.
-                self.draw.multiline_text((score_position, 15), score, fill=(255, 255, 255), font=self.font, align="center")
-                self.draw.multiline_text((period_position, 1), period, fill=(255, 255, 255), font=self.font_mini, align="center")
-                self.draw.multiline_text((time_period_pos, 8), time_period, fill=(255, 255, 255), font=self.font_mini, align="center")
-
-                self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
+                self.__draw_status_text(period, time_period, score)
+                self.__draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
                 self.render_surface.render(self.image)
 
                 # Refresh the Data image.
                 self.image = Image.new('RGB', (self.width, self.height))
                 self.draw = ImageDraw.Draw(self.image)
-
 
                 # Check if the game is over
                 if overview['game_status'] == 6 or overview['game_status'] == 7:
@@ -170,7 +153,7 @@ class MainRenderer:
                 self.render_surface.render(self.image)
                 #time.sleep(60)  # sleep for 1 min
 
-    def _draw_post_game(self):
+    def __draw_post_game(self):
         self.data.refresh_overview()
         if self.data.overview != 0:
             overview = self.data.overview
@@ -179,24 +162,15 @@ class MainRenderer:
             game_date = '{} {}'.format(month_abbr[self.data.month], self.data.day)
             score = '{}-{}'.format(overview['away_score'], overview['home_score'])
             period = overview['period']
-            time_period = overview['time']
-
-            # Set the position of the information on screen.
-            game_date_pos = center_text(self.font_mini.getsize(game_date)[0], 32)
-            time_period_pos = center_text(self.font_mini.getsize(time_period)[0], 32)
-            score_position = center_text(self.font.getsize(score)[0], 32)
-
-            # Draw the text on the Data image.
-            self.draw.multiline_text((game_date_pos, -1), game_date, fill=(255, 255, 255), font=self.font_mini, align="center")
-            self.draw.multiline_text((score_position, 15), score, fill=(255, 255, 255), font=self.font, align="center")
-            self.draw.multiline_text((time_period_pos, 5), time_period, fill=(255, 255, 255), font=self.font_mini, align="center")
 
             # Only show the period if the game ended in Overtime "OT" or Shootouts "SO"
             if period == "OT" or period == "SO":
-                period_position = center_text(self.font_mini.getsize(period)[0], 32)
-                self.draw.multiline_text((period_position, 11), period, fill=(255, 255, 255), font=self.font_mini,align="center")
+                time_period = period
+            else:
+                time_period = overview['time']
 
-            self._draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
+            self.__draw_status_text(game_date, time_period, score)
+            self.__draw_team_logos(self.image, overview['home_team_id'], overview['away_team_id'])
             self.render_surface.render(self.image)
 
             # Refresh the Data image.
@@ -209,7 +183,7 @@ class MainRenderer:
             self.render_surface.render(self.image)
             time.sleep(60)  # sleep for 1 min
 
-    def _draw_goal(self):
+    def __draw_goal(self):
 
         debug.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
         # Load the gif file
@@ -236,19 +210,27 @@ class MainRenderer:
             frameNo += 1
             time.sleep(0.1)
 
-    def _draw_off_day(self):
-        self._draw_team_logo(self.image, 'away', self.data.fav_team_id)
-
-        text = 'NO GAME\nTODAY'
-        self.draw.multiline_text((28, 8), text, fill=(255, 255, 255), font=self.font_mini, align="center")
-
+    def __draw_off_day(self):
+        self.__draw_team_logo(self.image, 'away', self.data.fav_team_id)
+        self.draw.multiline_text((28, 8), 'NO GAME\nTODAY', fill=(255, 255, 255), font=self.font_mini, align="center")
         self.render_surface.render(self.image)
 
-    def _draw_team_logo(self, image, team_type, team_id):
+    def __draw_team_logo(self, image, team_type, team_id):
         team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[team_id]['abbreviation']))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
 
-    def _draw_team_logos(self, image, home_team_id, away_team_id):
-        self._draw_team_logo(image, 'home', home_team_id)
-        self._draw_team_logo(image, 'away', away_team_id)
+    def __draw_team_logos(self, image, home_team_id, away_team_id):
+        self.__draw_team_logo(image, 'home', home_team_id)
+        self.__draw_team_logo(image, 'away', away_team_id)
+
+    def __draw_status_text(self, first_line, second_line, third_line):
+        # Set the position of the information on screen.
+        first_position = center_text(self.font_mini.getsize(first_line)[0], 32)
+        second_position = center_text(self.font_mini.getsize(second_line)[0], 32)
+        third_position = center_text(self.font.getsize(third_line)[0], 32)
+
+        # Draw the text on the Data image.
+        self.draw.multiline_text((first_position, 1), first_line, fill=(255, 255, 255), font=self.font_mini, align="center")
+        self.draw.multiline_text((second_position, 8), second_line, fill=(255, 255, 255), font=self.font_mini, align="center")
+        self.draw.multiline_text((third_position, 15), third_line, fill=(255, 255, 255), font=self.font, align="center")

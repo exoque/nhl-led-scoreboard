@@ -6,12 +6,13 @@ from renderer.screen_config import screenConfig
 import time
 import debug
 
+
 class MainRenderer:
-    def __init__(self, matrix, data):
-        self.matrix = matrix
+    def __init__(self, data):
+        #self.matrix = matrix
         self.data = data
         self.screen_config = screenConfig("64x32_config")
-        self.canvas = matrix.CreateFrameCanvas()
+     #   self.canvas = matrix.CreateFrameCanvas()
         self.width = 64
         self.height = 32
 
@@ -85,19 +86,23 @@ class MainRenderer:
             home_team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[overview['home_team_id']]['abbreviation']))
 
             # Draw the text on the Data image.
-            self.draw.text((22, -1), 'TODAY', font=self.font_mini)
-            self.draw.multiline_text((game_time_pos, 5), game_time, fill=(255, 255, 255), font=self.font_mini, align="center")
-            self.draw.text((25, 13), 'VS', font=self.font)
+            self.draw.text((22, 1), 'TODAY', font=self.font_mini)
+            self.draw.multiline_text((game_time_pos, 8), game_time, fill=(255, 255, 255), font=self.font_mini, align="center")
+            self.draw.text((25, 16), 'VS', font=self.font)
 
             # Put the data on the canvas
-            self.canvas.SetImage(self.image, 0, 0)
+            #self.canvas.SetImage(self.image, 0, 0)
 
             # Put the images on the canvas
-            self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-            self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+            #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
+            #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+
+            self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
+            self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
 
             # Load the canvas on screen.
-            self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
 
             # Refresh the Data image.
             self.image = Image.new('RGB', (self.width, self.height))
@@ -105,7 +110,8 @@ class MainRenderer:
         else:
             #(Need to make the screen run on it's own) If connection to the API fails, show bottom red line and refresh in 1 min.
             self.draw.line((0, 0) + (self.width, 0), fill=128)
-            self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
             time.sleep(60)  # sleep for 1 min
             # Refresh canvas
             self.image = Image.new('RGB', (self.width, self.height))
@@ -161,18 +167,21 @@ class MainRenderer:
 
                 # Draw the text on the Data image.
                 self.draw.multiline_text((score_position, 15), score, fill=(255, 255, 255), font=self.font, align="center")
-                self.draw.multiline_text((period_position, -1), period, fill=(255, 255, 255), font=self.font_mini, align="center")
-                self.draw.multiline_text((time_period_pos, 5), time_period, fill=(255, 255, 255), font=self.font_mini, align="center")
+                self.draw.multiline_text((period_position, 1), period, fill=(255, 255, 255), font=self.font_mini, align="center")
+                self.draw.multiline_text((time_period_pos, 8), time_period, fill=(255, 255, 255), font=self.font_mini, align="center")
 
                 # Put the data on the canvas
-                self.canvas.SetImage(self.image, 0, 0)
+                #self.canvas.SetImage(self.image, 0, 0)
 
                 # Put the images on the canvas
-                self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-                self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+                #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
+                #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+                self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
+                self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
 
                 # Load the canvas on screen.
-                self.canvas = self.matrix.SwapOnVSync(self.canvas)
+                #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+                self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
 
                 # Refresh the Data image.
                 self.image = Image.new('RGB', (self.width, self.height))
@@ -193,8 +202,9 @@ class MainRenderer:
             else:
                 # (Need to make the screen run on it's own) If connection to the API fails, show bottom red line and refresh in 1 min.
                 self.draw.line((0, 0) + (self.width, 0), fill=128)
-                self.canvas = self.matrix.SwapOnVSync(self.canvas)
-                time.sleep(60)  # sleep for 1 min
+                #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+                self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
+                #time.sleep(60)  # sleep for 1 min
 
     def _draw_post_game(self):
         self.data.refresh_overview()
@@ -231,14 +241,17 @@ class MainRenderer:
             home_team_logo_pos = self.screen_config.team_logos_pos[str(overview['home_team_id'])]['home']
 
             # Put the data on the canvas
-            self.canvas.SetImage(self.image, 0, 0)
+            #self.canvas.SetImage(self.image, 0, 0)
 
             # Put the images on the canvas
-            self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
-            self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+            #self.canvas.SetImage(away_team_logo.convert("RGB"), away_team_logo_pos["x"], away_team_logo_pos["y"])
+            #self.canvas.SetImage(home_team_logo.convert("RGB"), home_team_logo_pos["x"], home_team_logo_pos["y"])
+            self.image.paste(away_team_logo.convert("RGB"), (away_team_logo_pos["x"], away_team_logo_pos["y"]))
+            self.image.paste(home_team_logo.convert("RGB"), (home_team_logo_pos["x"], home_team_logo_pos["y"]))
 
             # Load the canvas on screen.
-            self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
 
             # Refresh the Data image.
             self.image = Image.new('RGB', (self.width, self.height))
@@ -247,7 +260,8 @@ class MainRenderer:
         else:
             # (Need to make the screen run on it's own) If connection to the API fails, show bottom red line and refresh in 1 min.
             self.draw.line((0, 0) + (self.width, 0), fill=128)
-            self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
             time.sleep(60)  # sleep for 1 min
 
     def _draw_goal(self):
@@ -258,7 +272,7 @@ class MainRenderer:
         # Set the frame index to 0
         frameNo = 0
 
-        self.canvas.Clear()
+        #self.canvas.Clear()
 
         # Go through the frames
         x = 0
@@ -270,12 +284,17 @@ class MainRenderer:
                 frameNo = 0
                 im.seek(frameNo)
 
-            self.canvas.SetImage(im.convert('RGB'), 0, 0)
-            self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            #self.canvas.SetImage(im.convert('RGB'), 0, 0)
+            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
+            self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
             frameNo += 1
             time.sleep(0.1)
 
     def _draw_off_day(self):
         self.draw.text((0, -1), 'NO GAME TODAY', font=self.font_mini)
-        self.canvas.SetImage(self.image, 0, 0)
-        self.canvas = self.matrix.SwapOnVSync(self.canvas)
+        self._draw_image()
+
+    def _draw_image(self):
+        # self.canvas.SetImage(self.image, 0, 0)
+        # self.canvas = self.matrix.SwapOnVSync(self.canvas)
+        self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")

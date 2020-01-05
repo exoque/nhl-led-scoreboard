@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import debug
 import nhl_api_parser as nhlparser
 
 
@@ -45,16 +46,20 @@ class Data:
 
     def get_current_date(self):
         self.year, self.month, self.day = self.__parse_today()
+        debug.info("{}-{}-{}".format(self.year, self.month, self.day))
 
     def refresh_overview(self):
         self.overview = nhlparser.fetch_overview(self.fav_team_id)
         self.needs_refresh = False
 
     def get_schedule(self):
-        self.schedule = nhlparser.fetch_fav_team_schedule(self.fav_team_id)
+        self.schedule = nhlparser.fetch_fav_team_schedule(self.fav_team_id, self.get_date())
 
     def refresh_fav_team_status(self):
-        self.fav_team_game_today = nhlparser.check_if_game(self.fav_team_id)
+        self.fav_team_game_today = nhlparser.check_if_game(self.fav_team_id, self.get_date())
+
+    def get_date(self):
+        return "{}-{}-{}".format(self.year, self.month, self.day)
 
     def check_fav_team_next_game(self):
         pass

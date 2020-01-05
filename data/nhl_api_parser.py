@@ -1,5 +1,6 @@
 import requests
 import datetime
+import debug
 from goal import Goal
 from utils import convert_time
 
@@ -163,11 +164,12 @@ def fetch_overview(team_id):
     except KeyError:
         print("missing data from the game. Game has not begun or is not scheduled today.")
 
-def fetch_fav_team_schedule(team_id):
+
+def fetch_fav_team_schedule(team_id, current_date):
     """ Function to get the summary of a scheduled game. """
     # Set URL depending on team selected
-    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
-
+    url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id, current_date)
+    debug.info(url)
     try:
         game_data = requests.get(url)
         game_data = game_data.json()
@@ -175,7 +177,7 @@ def fetch_fav_team_schedule(team_id):
         home_team_id = int(game_data['dates'][0]['games'][0]['teams']['home']['team']['id'])
         away_team_id = int(game_data['dates'][0]['games'][0]['teams']['away']['team']['id'])
 
-        game_time = convert_time(game_data["dates"][0]["games"][0]["gameDate"]).strftime("%I:%M")
+        game_time = convert_time(game_data["dates"][0]["games"][0]["gameDate"]).strftime("%H:%M")
 
         current_game_schedule = {'home_team_id': home_team_id, 'away_team_id': away_team_id, 'game_time': game_time}
 
@@ -197,14 +199,19 @@ def check_season():
         return True
 
 
-def check_if_game(team_id):
+def check_if_game(team_id, current_date):
     """ Function to check if there is a game now with chosen team. Returns True if game, False if NO game. """
     # Set URL depending with team selected
-    url = '{0}schedule?teamId={1}'.format(NHL_API_URL, team_id)
+    url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id, current_date)
+    debug.info(url)
     try:
         game_data = requests.get(url)
         game_data = game_data.json()
         game = game_data["totalGames"]
+
+        debug.info("games today: {}".format(game))
+        debug.info(game_data)
+
         if game != 0:
             status = int(game_data["dates"][0]["games"][0]['status']['statusCode'])
             return status

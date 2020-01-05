@@ -16,10 +16,10 @@ args = args()
 matrixOptions = led_matrix_options(args)
 
 # Initialize the matrix
-matrix = RGBMatrix(options = matrixOptions)
+#matrix = RGBMatrix(options = matrixOptions)
 
 # Print some basic info on startup
-debug.info("{} - v{} ({}x{})".format(SCRIPT_NAME, SCRIPT_VERSION, matrix.width, matrix.height))
+#debug.info("{} - v{} ({}x{})".format(SCRIPT_NAME, SCRIPT_VERSION, matrix.width, matrix.height))
 
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)
@@ -27,4 +27,4 @@ debug.set_debug_status(config)
 
 data = Data(config)
 
-MainRenderer(matrix, data).render()
+MainRenderer(data).render()

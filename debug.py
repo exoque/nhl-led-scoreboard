@@ -2,7 +2,7 @@
 import time
 import sys
 
-debug_enabled = False
+debug_enabled = True
 
 def set_debug_status(config):
 	global debug_enabled

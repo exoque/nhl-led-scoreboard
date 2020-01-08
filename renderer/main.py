@@ -3,6 +3,7 @@ from rgbmatrix import graphics
 from utils import center_text
 from calendar import month_abbr
 from renderer.screen_config import screenConfig
+from animation_renderer import AnimationRenderer
 import time
 import debug
 
@@ -184,31 +185,9 @@ class MainRenderer:
             time.sleep(60)  # sleep for 1 min
 
     def __draw_goal(self):
-
         debug.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
-        # Load the gif file
-        im = Image.open("Assets/goal_light_animation.gif")
-        # Set the frame index to 0
-        frameNo = 0
-
-        #self.canvas.Clear()
-
-        # Go through the frames
-        x = 0
-        while x is not 5:
-            try:
-                im.seek(frameNo)
-            except EOFError:
-                x += 1
-                frameNo = 0
-                im.seek(frameNo)
-
-            #self.canvas.SetImage(im.convert('RGB'), 0, 0)
-            #self.canvas = self.matrix.SwapOnVSync(self.canvas)
-            #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
-            self.render_surface.render(im.convert('RGB'))
-            frameNo += 1
-            time.sleep(0.1)
+        animation_renderer = AnimationRenderer(self.render_surface, "Assets/goal_light_animation.gif")
+        animation_renderer.render()
 
     def __draw_off_day(self):
         self.__draw_team_logo(self.image, 'away', self.data.fav_team_id)
@@ -219,6 +198,7 @@ class MainRenderer:
         team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.data.get_teams_info[team_id]['abbreviation']))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
+        team_logo.close()
 
     def __draw_team_logos(self, image, home_team_id, away_team_id):
         self.__draw_team_logo(image, 'home', home_team_id)

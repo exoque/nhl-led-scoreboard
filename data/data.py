@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import debug
-#import nhl_api_parser_mock as nhlparser
-import nhl_api_parser as nhlparser
+import nhl_api_parser_mock as nhlparser
+#import nhl_api_parser as nhlparser
 
 
 class Data:

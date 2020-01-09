@@ -4,6 +4,7 @@ from utils import center_text
 from calendar import month_abbr
 from renderer.screen_config import screenConfig
 from animation_renderer import AnimationRenderer
+from team_logo_renderer import TeamLogoRenderer
 import time
 import debug
 
@@ -11,6 +12,7 @@ import debug
 class MainRenderer:
     def __init__(self, render_surface, data):
         self.render_surface = render_surface
+        self.animation_renderer = AnimationRenderer(self.render_surface)
         self.data = data
         self.screen_config = screenConfig("64x32_config")
         self.width = 64
@@ -120,11 +122,11 @@ class MainRenderer:
                 # Use this code if you want the goal animation to run for both team's goal.
                 # Run the goal animation if there is a goal.
                 if overview['home_score'] > home_score or overview['away_score'] > away_score:
-                   self.__draw_goal()
+                    self.__draw_goal()
 
                 # Prepare the data
                 score = '{}-{}'.format(overview['away_score'], overview['home_score'])
-                period = overview['period']
+                period = self.__get_period_text(overview['period'])
                 time_period = overview['time']
 
                 self.__draw_status_text(period, time_period, score)
@@ -153,6 +155,16 @@ class MainRenderer:
                 #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
                 self.render_surface.render(self.image)
                 #time.sleep(60)  # sleep for 1 min
+
+    def __get_period_text(self, period):
+        if period == '1':
+            return period + "st"
+        elif period == '2':
+            return period + "nd"
+        elif period == '3':
+            return period + "rd"
+        else:
+            return period
 
     def __draw_post_game(self):
         self.data.refresh_overview()
@@ -186,8 +198,7 @@ class MainRenderer:
 
     def __draw_goal(self):
         debug.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
-        animation_renderer = AnimationRenderer(self.render_surface, "Assets/goal_light_animation.gif")
-        animation_renderer.render()
+        self.animation_renderer.render("Assets/goal_light_animation.gif")
 
     def __draw_off_day(self):
         self.__draw_team_logo(self.image, 'away', self.data.fav_team_id)

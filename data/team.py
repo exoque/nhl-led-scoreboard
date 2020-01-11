@@ -10,4 +10,4 @@ class Team:
         self.division = division
 
     def __repr__(self):
-        return "{}, {}, {}, {}, {}, {}".format(self.key, self.name, self.location, self.abbreviation, self.conference, self.division)
+        return "Team[{}, {}, {}, {}, {}, {}]".format(self.key, self.name, self.location, self.abbreviation, self.conference, self.division)

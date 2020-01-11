@@ -14,7 +14,7 @@ class Game:
         self.away_team = away_team
 
     def __repr__(self):
-        return "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(self.key, self.period, self.time, self.home_team_id, self.home_score, self.away_team_id, self.away_score, self.game_status, self.game_time, self.home_team, self.away_team)
+        return "Game[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]".format(self.key, self.period, self.time, self.home_team_id, self.home_score, self.away_team_id, self.away_score, self.game_status, self.game_time, self.home_team, self.away_team)
 
 
 class GameTeam:

@@ -28,6 +28,7 @@ nhl_data_source = DataSourceNhl()
 print(nhl_data_source.load_teams())
 print(nhl_data_source.load_game_info(5))
 print(nhl_data_source.load_day_schedule("2020-01-10"))
+print(nhl_data_source.load_game_stats(2019020691))
 
 
 # Read scoreboard options from config.json if it exists

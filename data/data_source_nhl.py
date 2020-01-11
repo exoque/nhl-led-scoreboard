@@ -1,11 +1,14 @@
 from data.data_source import DataSource
+from data.goal import Goal
 from data.team import Team
 from data.game import Game, GameTeam, GameTeamLeagueRecord, GameTeamShootoutInfo, GameTeamStats
 from utils import convert_time
+import debug
 
 
 class DataSourceNhl(DataSource):
     NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
+    NHL_API_URL_BASE = "http://statsapi.web.nhl.com"
 
     def load_teams(self):
         url = '{0}/teams'.format(self.NHL_API_URL)
@@ -45,13 +48,40 @@ class DataSourceNhl(DataSource):
         return games
 
     def load_game_stats(self, key):
-        pass
+        url = '{0}{1}'.format(self.NHL_API_URL_BASE, '/api/v1/game/2019020691/feed/live')
+        result = self._execute_request(url)
+        live_data = result['liveData']
+        plays = live_data['plays']
+        all_plays = plays['allPlays']
+        scoring_plays = plays['scoringPlays']
+        current_play = plays['currentPlay']
+        debug.log(current_play)
+
+        goals = []
+
+        for scoring_play in scoring_plays:
+            goals.append(self._build_goal(all_plays[scoring_play]))
+
+        debug.log(goals)
 
     def load_game_for_team(self, key, date):
         pass
 
     def load_team_schedule(self, key):
         pass
+
+    @staticmethod
+    def _build_goal(event):
+        players = event['players']
+        time = event['about']['periodTime']
+        team = event['team']['id']
+        kind = event['result']['secondaryType']
+        strength = event['result']['strength']['code']
+        scorer = players[0]['player']['fullName']
+        assist1 = players[1]['player']['fullName']
+        assist2 = players[2]['player']['fullName']
+
+        return Goal(time, team, kind, strength, scorer, assist1, assist2)
 
     def _build_games(self, games):
         game_list = []
@@ -96,8 +126,18 @@ class DataSourceNhl(DataSource):
         if linescore is None:
             return None
 
-        return linescore['currentPeriodOrdinal'] if 'currentPeriodOrdinal' in linescore else linescore[
-            'currentPeriod'] if 'currentPeriod' in linescore else None
+        return linescore['currentPeriodOrdinal'] if 'currentPeriodOrdinal' in linescore else DataSourceNhl.__get_period_text(linescore['currentPeriod']) if 'currentPeriod' in linescore else None
+
+    @staticmethod
+    def __get_period_text(period):
+        if period == '1':
+            return period + "st"
+        elif period == '2':
+            return period + "nd"
+        elif period == '3':
+            return period + "rd"
+        else:
+            return period
 
     @staticmethod
     def __build_game_team(game, team_type):

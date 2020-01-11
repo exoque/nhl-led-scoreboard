@@ -127,7 +127,7 @@ class MainRenderer:
 
                 # Prepare the data
                 score = '{}-{}'.format(overview['away_score'], overview['home_score'])
-                period = self.__get_period_text(overview['period'])
+                period = overview['period']
                 time_period = overview['time']
 
                 self.__draw_status_text(period, time_period, score)
@@ -156,16 +156,6 @@ class MainRenderer:
                 #self.image.save('/home/ch/Pictures/nhl-scoreboard.png', "PNG")
                 self.render_surface.render(self.image)
                 #time.sleep(60)  # sleep for 1 min
-
-    def __get_period_text(self, period):
-        if period == '1':
-            return period + "st"
-        elif period == '2':
-            return period + "nd"
-        elif period == '3':
-            return period + "rd"
-        else:
-            return period
 
     def __draw_post_game(self):
         self.data.refresh_overview()

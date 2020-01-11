@@ -5,9 +5,10 @@ import sys
 import debug
 
 class screenConfig:
-    def __init__(self, filename_base):
+    def __init__(self, filename_base, frame_time):
         json = self.__get_config(filename_base)
         self.team_logos_pos = json["team_logos"]
+        self.frame_time = frame_time
 
     def read_json(self, filename):
         # Find and return a json file

@@ -29,7 +29,11 @@ print(nhl_data_source.load_teams())
 print(nhl_data_source.load_game_info(5))
 print(nhl_data_source.load_day_schedule("2020-01-10"))
 print(nhl_data_source.load_game_stats(2019020691))
-
+print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065130'))
+print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065030'))
+print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064930'))
+print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064830'))
+print(nhl_data_source.load_game_stats_update(2019020691, '20200111_044030'))
 
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)

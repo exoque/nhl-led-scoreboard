@@ -14,7 +14,7 @@ class DataSource(ABC):
         pass
 
     @abstractmethod
-    def load_team_schedule(self, key):
+    def load_team_schedule(self, key, from_date, to_date):
         pass
 
     @abstractmethod
@@ -27,6 +27,10 @@ class DataSource(ABC):
 
     @abstractmethod
     def load_game_stats(self, key):
+        pass
+
+    @abstractmethod
+    def load_game_stats_update(self, key, time_stamp):
         pass
 
     @staticmethod

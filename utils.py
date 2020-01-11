@@ -17,6 +17,9 @@ def get_file(path):
 def center_text(text_width,center_pos):
   return abs(center_pos - (text_width / 2))
 
+def right_text(text_width, right_pos):
+  return right_pos - text_width
+
 def split_string(string, num_chars):
   return [(string[i:i + num_chars]).strip() for i in range(0, len(string), num_chars)]
 

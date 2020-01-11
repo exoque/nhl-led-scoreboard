@@ -1,5 +1,8 @@
 from PIL import Image, ImageFont, ImageDraw, ImageSequence
 from rgbmatrix import graphics
+
+from data.data_source_nhl import DataSourceNhl
+from renderer.boxscore_renderer import BoxscoreRenderer
 from utils import center_text
 from calendar import month_abbr
 from renderer.screen_config import screenConfig
@@ -15,9 +18,12 @@ class MainRenderer:
         self.render_surface = render_surface
         self.animation_renderer = AnimationRenderer(self.render_surface)
         self.data = data
-        self.screen_config = screenConfig("64x32_config")
+        self.frame_time = time.time()
+        self.screen_config = screenConfig("64x32_config", self.frame_time)
         self.width = 64
         self.height = 32
+
+
 
         # Create a new data image.
         self.image = Image.new('RGB', (self.width, self.height))
@@ -29,6 +35,10 @@ class MainRenderer:
 
     def render(self):
         # loop through the different state.
+        #while True:
+
+        self.__render_test()
+        '''
         while True:
             self.data.get_current_date()
             self.data.refresh_fav_team_status()
@@ -40,6 +50,24 @@ class MainRenderer:
             else:
                 debug.info('Off day State')
                 self.__render_off_day()
+'''
+
+    def __render_test(self):
+        nhl_data_source = DataSourceNhl()
+        data = nhl_data_source.load_game_stats(2019020691)
+        box_score_renderer = BoxscoreRenderer(data, self.screen_config, self.render_surface)
+
+        while True:
+            self.frame_time = time.time()
+
+            box_score_renderer.render(self.image, self.frame_time)
+            #self.render_surface.render(self.image)
+
+            # Refresh the Data image.
+            self.image = Image.new('RGB', (self.width, self.height))
+            self.draw = ImageDraw.Draw(self.image)
+
+            time.sleep(1)
 
     def __render_game(self):
 

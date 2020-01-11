@@ -1,4 +1,5 @@
 from data.data_source import DataSource
+from data.event import EventGoals
 from data.goal import Goal
 from data.team import Team
 from data.game import Game, GameTeam, GameTeamLeagueRecord, GameTeamShootoutInfo, GameTeamStats
@@ -11,7 +12,7 @@ class DataSourceNhl(DataSource):
     NHL_API_URL_BASE = "http://statsapi.web.nhl.com"
 
     def load_teams(self):
-        url = '{0}/teams'.format(self.NHL_API_URL)
+        url = '{0}teams'.format(self.NHL_API_URL)
         result = self._execute_request(url)
         teams = {}
 
@@ -63,15 +64,22 @@ class DataSourceNhl(DataSource):
             goals.append(self._build_goal(all_plays[scoring_play]))
 
         debug.log(goals)
+        return goals
+
+    def load_game_stats_update(self, key, time_stamp):
+        url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.NHL_API_URL, key, time_stamp)
+        result = self._execute_request(url)
+        debug.log(result)
 
     def load_game_for_team(self, key, date):
         pass
 
-    def load_team_schedule(self, key):
+    def load_team_schedule(self, key, from_date, to_date):
         pass
 
     @staticmethod
     def _build_goal(event):
+        debug.log(event)
         players = event['players']
         time = event['about']['periodTime']
         team = event['team']['id']
@@ -81,7 +89,11 @@ class DataSourceNhl(DataSource):
         assist1 = players[1]['player']['fullName']
         assist2 = players[2]['player']['fullName']
 
-        return Goal(time, team, kind, strength, scorer, assist1, assist2)
+        return Goal(time, team, kind, strength, scorer, assist1, assist2, DataSourceNhl._build_result(event['about']['goals']))
+
+    @staticmethod
+    def _build_result(res):
+        return EventGoals(res['home'], res['away'])
 
     def _build_games(self, games):
         game_list = []

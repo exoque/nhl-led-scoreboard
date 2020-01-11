@@ -1,7 +1,7 @@
 import requests
 import datetime
 import debug
-from goal import Goal
+from data.goal import Goal
 from utils import convert_time
 
 NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
@@ -203,14 +203,16 @@ def check_if_game(team_id, current_date):
     """ Function to check if there is a game now with chosen team. Returns True if game, False if NO game. """
     # Set URL depending with team selected
     url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id, current_date)
-    debug.info(url)
+    #debug.info(url)
     try:
         game_data = requests.get(url)
         game_data = game_data.json()
+        #debug.info(game_data)
+
         game = game_data["totalGames"]
 
-        debug.info("games today: {}".format(game))
-        debug.info(game_data)
+        #debug.info("games today: {}".format(game))
+        #debug.info(game_data)
 
         if game != 0:
             status = int(game_data["dates"][0]["games"][0]['status']['statusCode'])

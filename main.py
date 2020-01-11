@@ -8,6 +8,9 @@ from renderer.matrix_render_surface import MatrixRenderSurface
 from renderer.image_render_surface import ImageRenderSurface
 import debug
 
+
+from data.data_source_nhl import DataSourceNhl
+
 SCRIPT_NAME = "NHL Scoreboard"
 SCRIPT_VERSION = "0.1.0"
 
@@ -19,6 +22,13 @@ matrixOptions = led_matrix_options(args)
 
 # Print some basic info on startup
 debug.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))
+
+
+nhl_data_source = DataSourceNhl()
+print(nhl_data_source.load_teams())
+print(nhl_data_source.load_game_info(5))
+print(nhl_data_source.load_day_schedule("2020-01-10"))
+
 
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)

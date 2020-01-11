@@ -1,7 +1,7 @@
 import requests
 import datetime
 import debug
-from goal import Goal
+from data.goal import Goal
 from random import *
 from utils import convert_time
 

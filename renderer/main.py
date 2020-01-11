@@ -3,8 +3,9 @@ from rgbmatrix import graphics
 from utils import center_text
 from calendar import month_abbr
 from renderer.screen_config import screenConfig
-from animation_renderer import AnimationRenderer
-from team_logo_renderer import TeamLogoRenderer
+from renderer.animation_renderer import AnimationRenderer
+from renderer.team_logo_renderer import TeamLogoRenderer
+from data.data_source import DataSource
 import time
 import debug
 

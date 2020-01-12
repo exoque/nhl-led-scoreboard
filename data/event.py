@@ -6,6 +6,9 @@ class Event:
         self.about = about
         self.team = team
 
+    def __repr__(self):
+        return "Event[{}, {}, {}, {}, {}]".format(self.key, self.players, self.result, self.about, self.team)
+
 
 class EventPlayer:
     def __init__(self, key, full_name, link, player_type, season_total):
@@ -14,6 +17,9 @@ class EventPlayer:
         self.link = link
         self.player_type = player_type
         self.season_total = season_total
+
+    def __repr__(self):
+        return "EventPlayer[{}, {}, {}, {}, {}]".format(self.key, self.full_name, self.link, self.player_type, self.season_total)
 
 
 class EventGoals:
@@ -30,6 +36,9 @@ class EventResult:
         self.description = description
         self.secondary_type = secondary_type
 
+    def __repr__(self):
+        return "EventResult[{}, {}, {}, {}, {}]".format(self.event, self.event_code, self.event_type_id, self.description, self.secondary_type)
+
 
 class EventAbout:
     def __init__(self, period, period_type, period_time, goals):
@@ -37,3 +46,6 @@ class EventAbout:
         self.period_type = period_type
         self.period_time = period_time
         self.goals = goals
+
+    def __repr__(self):
+        return "EventAbout[{}, {}, {}, {}]".format(self.period, self.period_type, self.period_time, self.goals,)

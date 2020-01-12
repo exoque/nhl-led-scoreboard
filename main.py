@@ -44,5 +44,5 @@ data = Data(config)
 #matrixRenderSurface = MatrixRenderSurface(matrixOptions)
 #MainRenderer(matrixRenderSurface, data).render()
 
-imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
-MainRenderer(imageRenderSurface, data).render()
+#imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
+#MainRenderer(imageRenderSurface, data).render()

@@ -1,5 +1,7 @@
+import re
+
 from data.data_source import DataSource
-from data.event import EventGoals
+from data.event import EventGoals, EventPlayer, Event, EventResult, EventAbout
 from data.goal import Goal
 from data.team import Team
 from data.game import Game, GameTeam, GameTeamLeagueRecord, GameTeamShootoutInfo, GameTeamStats
@@ -70,8 +72,75 @@ class DataSourceNhl(DataSource):
         debug.log(result)
         diff_list = result[0]['diff']
 
+        time_stamp = [res['value'] for res in diff_list if res['path'] == '/metaData/timeStamp'][0]
+        debug.log(time_stamp)
+
+        #goal_list = [[re.findall(r'\d+', res['path']), res['path']] for res in diff_list if 'value' in res and res['value'] == 'FACEOFF']
+        #debug.log(goal_list)
+
+        goal_list = [re.findall(r'\d+', res['path']) for res in diff_list if
+                     'value' in res and res['value'] == 'SHOT']
+        debug.log(goal_list)
+
+        for entry_key in goal_list:
+            debug.log(entry_key)
+            goal_items = [res for res in diff_list if len(entry_key) > 0 and entry_key[0] in res['path']]
+            debug.log(goal_items)
+
+            if len(goal_items) == 0:
+                continue
+
+            e = Event(entry_key[0], None, EventResult(None, None, None, None, None), EventAbout(None, None, None, None), None)
+
+            for item in goal_items:
+
+                if item['path'].endswith('/about/periodTime'):
+                    debug.log(item['value'])
+                    e.about.period_time = item['value']
+                elif item['path'].endswith('/about/eventId'):
+                    debug.log(item['value'])
+                    e.about.event_id = item['value']
+                elif item['path'].endswith('/about/periodTimeRemaining'):
+                    debug.log(item['value'])
+                    e.about.period_time_remaining = item['value']
+                elif item['path'].endswith('/about/dateTime'):
+                    debug.log(item['value'])
+                    e.about.date_time = item['value']
+                elif item['path'].endswith('/result/description'):
+                    debug.log(item['value'])
+                    e.result.description = item['value']
+                elif item['path'].endswith('/result/event'):
+                    debug.log(item['value'])
+                    e.result.event = item['value']
+                elif item['path'].endswith('/result/eventCode'):
+                    debug.log(item['value'])
+                    e.result.event_code = item['value']
+                elif item['path'].endswith('/result/eventTypeId'):
+                    debug.log(item['value'])
+                    e.result.event_type_id = item['value']
+                elif '/players/0' in item['path']:
+                    debug.log(item['value'])
+                elif '/players/1' in item['path']:
+                    debug.log(item['value'])
+                elif '/players/2' in item['path']:
+                    debug.log(item['value'])
+                elif '/players/3' in item['path']:
+                    debug.log(item['value'])
+                elif item['path'].endswith('/players'):
+                    debug.log(item['value'])
+                    p_l = []
+                    for i in item['value']:
+                        player = i['player']
+                        p_l.append(EventPlayer(player['id'], player['fullName'], player['link'], i['playerType'], None))
+                    e.players = p_l
+
+            debug.log(e)
+
         for diff in diff_list:
-            debug.log(diff)
+            self._parse_diff(diff)
+
+    def _parse_diff(self, diff):
+        debug.log(diff)
 
     def load_game_for_team(self, key, date):
         pass

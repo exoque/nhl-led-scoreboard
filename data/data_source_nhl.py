@@ -38,7 +38,7 @@ class DataSourceNhl(DataSource):
         return game
 
     def load_day_schedule(self, date):
-        url = '{0}schedule?date={1}'.format(self.NHL_API_URL, date)
+        url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.NHL_API_URL, date)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:
@@ -131,14 +131,17 @@ class DataSourceNhl(DataSource):
         if linescore is None:
             return None
 
-        return linescore['currentPeriodTimeRemaining'] if 'currentPeriodTimeRemaining' in linescore else None
+        time = linescore['currentPeriodTimeRemaining'] if 'currentPeriodTimeRemaining' in linescore else None
+        debug.log(time)
+        return time
 
     @staticmethod
     def __get_current_period(linescore):
         if linescore is None:
             return None
-
-        return linescore['currentPeriodOrdinal'] if 'currentPeriodOrdinal' in linescore else DataSourceNhl.__get_period_text(linescore['currentPeriod']) if 'currentPeriod' in linescore else None
+        period = linescore['currentPeriodOrdinal'] if 'currentPeriodOrdinal' in linescore else DataSourceNhl.__get_period_text(linescore['currentPeriod']) if 'currentPeriod' in linescore else None
+        debug.log(period)
+        return period
 
     @staticmethod
     def __get_period_text(period):

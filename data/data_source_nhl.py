@@ -8,11 +8,9 @@ import debug
 
 
 class DataSourceNhl(DataSource):
-    NHL_API_URL = "http://statsapi.web.nhl.com/api/v1/"
-    NHL_API_URL_BASE = "http://statsapi.web.nhl.com"
 
     def load_teams(self):
-        url = '{0}teams'.format(self.NHL_API_URL)
+        url = '{0}teams'.format(self.url)
         result = self._execute_request(url)
         teams = {}
 
@@ -27,7 +25,7 @@ class DataSourceNhl(DataSource):
         return teams
 
     def load_game_info(self, key):
-        url = '{0}schedule?expand=schedule.linescore&teamId={1}'.format(self.NHL_API_URL, key)
+        url = '{0}schedule?expand=schedule.linescore&teamId={1}'.format(self.url, key)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:
@@ -38,7 +36,7 @@ class DataSourceNhl(DataSource):
         return game
 
     def load_day_schedule(self, date):
-        url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.NHL_API_URL, date)
+        url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.url, date)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:
@@ -49,7 +47,7 @@ class DataSourceNhl(DataSource):
         return games
 
     def load_game_stats(self, key):
-        url = '{0}{1}'.format(self.NHL_API_URL_BASE, '/api/v1/game/2019020691/feed/live')
+        url = '{0}{1}'.format(self.url, 'game/2019020691/feed/live')
         result = self._execute_request(url)
         live_data = result['liveData']
         plays = live_data['plays']
@@ -67,9 +65,13 @@ class DataSourceNhl(DataSource):
         return goals
 
     def load_game_stats_update(self, key, time_stamp):
-        url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.NHL_API_URL, key, time_stamp)
+        url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.url, key, time_stamp)
         result = self._execute_request(url)
         debug.log(result)
+        diff_list = result[0]['diff']
+
+        for diff in diff_list:
+            debug.log(diff)
 
     def load_game_for_team(self, key, date):
         pass
@@ -117,11 +119,11 @@ class DataSourceNhl(DataSource):
         return Game(game['gamePk'],
                     self.__get_current_period(linescore),
                     self.__get_current_period_time_remaining(linescore),
-                    home_team['team']['id'],
-                    home_team['score'],
-                    away_team['team']['id'],
-                    away_team['score'],
-                    game['status']['statusCode'],
+                    int(home_team['team']['id']),
+                    int(home_team['score']),
+                    int(away_team['team']['id']),
+                    int(away_team['score']),
+                    int(game['status']['statusCode']),
                     convert_time(game['gameDate']).strftime("%I:%M"),
                     h_team,
                     a_team)
@@ -132,7 +134,6 @@ class DataSourceNhl(DataSource):
             return None
 
         time = linescore['currentPeriodTimeRemaining'] if 'currentPeriodTimeRemaining' in linescore else None
-        debug.log(time)
         return time
 
     @staticmethod
@@ -140,7 +141,6 @@ class DataSourceNhl(DataSource):
         if linescore is None:
             return None
         period = linescore['currentPeriodOrdinal'] if 'currentPeriodOrdinal' in linescore else DataSourceNhl.__get_period_text(linescore['currentPeriod']) if 'currentPeriod' in linescore else None
-        debug.log(period)
         return period
 
     @staticmethod
@@ -186,7 +186,7 @@ class DataSourceNhl(DataSource):
                                       league_record['losses'],
                                       league_record['ot'])
 
-        team = GameTeam(team['team']['id'],
+        team = GameTeam(int(team['team']['id']),
                         team['team']['name'],
                         stats,
                         record,

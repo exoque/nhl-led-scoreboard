@@ -4,6 +4,9 @@ import debug
 
 
 class DataSource(ABC):
+    def __init__(self, config):
+        self.config = config
+        self.url = config.url
 
     @abstractmethod
     def load_teams(self):

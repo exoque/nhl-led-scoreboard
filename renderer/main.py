@@ -38,8 +38,8 @@ class MainRenderer:
         # loop through the different state.
         #while True:
 
-        #self.__render_test_boxscore()
-        self.__render_test_game_day()
+        self.__render_test_boxscore()
+        #self.__render_test_game_day()
 
         '''
         while True:
@@ -56,9 +56,10 @@ class MainRenderer:
 '''
 
     def __render_test_boxscore(self):
-        nhl_data_source = DataSourceNhl()
+        nhl_data_source = DataSourceNhl(self.data.config)
         data = nhl_data_source.load_game_stats(2019020691)
-        box_score_renderer = BoxscoreRenderer(data, teams, self.screen_config, self.render_surface)
+        teams = nhl_data_source.load_teams()
+        box_score_renderer = BoxscoreRenderer(data, teams, self.screen_config, self.data.config, self.render_surface)
 
         while True:
             self.frame_time = time.time()
@@ -73,10 +74,10 @@ class MainRenderer:
             time.sleep(1)
 
     def __render_test_game_day(self):
-        nhl_data_source = DataSourceNhl()
+        nhl_data_source = DataSourceNhl(self.data.config)
         data = nhl_data_source.load_day_schedule("2020-01-11")
         teams = nhl_data_source.load_teams()
-        game_day_renderer = GameDayRenderer(data, teams, self.screen_config, self.render_surface)
+        game_day_renderer = GameDayRenderer(data, teams, self.screen_config, self.data.config, self.render_surface)
 
         while True:
             self.frame_time = time.time()

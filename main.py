@@ -23,21 +23,22 @@ matrixOptions = led_matrix_options(args)
 # Print some basic info on startup
 debug.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))
 
-
-nhl_data_source = DataSourceNhl()
-print(nhl_data_source.load_teams())
-print(nhl_data_source.load_game_info(5))
-print(nhl_data_source.load_day_schedule("2020-01-10"))
-print(nhl_data_source.load_game_stats(2019020691))
-print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065130'))
-print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065030'))
-print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064930'))
-print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064830'))
-print(nhl_data_source.load_game_stats_update(2019020691, '20200111_044030'))
-
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)
 debug.set_debug_status(config)
+
+nhl_data_source = DataSourceNhl(config)
+#print(nhl_data_source.load_teams())
+#print(nhl_data_source.load_game_info(5))
+#print(nhl_data_source.load_day_schedule("2020-01-10"))
+#print(nhl_data_source.load_game_stats(2019020691))
+#print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065130'))
+#print(nhl_data_source.load_game_stats_update(2019020691, '20200111_065030'))
+#print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064930'))
+#print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064830'))
+print(nhl_data_source.load_game_stats_update(2019020693, '20200112_023402'))
+
+
 
 data = Data(config)
 #matrixRenderSurface = MatrixRenderSurface(matrixOptions)

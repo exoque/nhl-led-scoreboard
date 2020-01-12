@@ -6,8 +6,8 @@ import time
 
 
 class RotateScreenRenderer(Renderer):
-    def __init__(self, data, screen_config, render_surface):
-        super().__init__()
+    def __init__(self, data, screen_config, config, render_surface):
+        super().__init__(config)
         self.screen_config = screen_config
         debug.log(data)
         self.data = data
@@ -30,6 +30,7 @@ class RotateScreenRenderer(Renderer):
         else:
             self.start_time = time.time()
 
+        debug.log(self.current_item)
         return self.data[self.current_item]
 
     @staticmethod

@@ -27,6 +27,9 @@ class EventGoals:
         self.home = home
         self.away = away
 
+    def __repr__(self):
+        return "EventGoals[{}, {}]".format(self.home, self.away)
+
 
 class EventResult:
     def __init__(self, event, event_code, event_type_id, description, secondary_type):

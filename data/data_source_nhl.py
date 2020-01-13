@@ -10,6 +10,9 @@ from utils import convert_time
 import debug
 
 
+
+
+
 class DataSourceNhl(DataSource):
 
     def load_teams(self):
@@ -76,20 +79,40 @@ class DataSourceNhl(DataSource):
         diff_list = result[0]['diff']
 
         time_stamp = [res['value'] for res in diff_list if res['path'] == '/metaData/timeStamp'][0]
-        #debug.log(time_stamp)
+        debug.log(time_stamp)
 
         #goal_list = [[re.findall(r'\d+', res['path']), res['path']] for res in diff_list if 'value' in res and res['value'] == 'FACEOFF']
         #debug.log(goal_list)
 
-        goal_list = [re.findall(r'\d+', res['path']) for res in diff_list if
-                     'value' in res and (res['value'] == 'SHOT' or res['value'] == 'FACEOFF' or res['value'] == 'BLOCKED_SHOT')]
-        #debug.log(goal_list)
-
-        goal_list = [re.findall(r'\d+', res['path']) for res in diff_list if 'value' in res and (self._has_value(res, 'SHOT') or self._has_value(res, 'FACEOFF') or self._has_value(res, 'BLOCKED_SHOT'))]
+        goal_list = [re.findall(r'\d+', res['path']) for res in diff_list
+                     if ('value' in res
+                      and res['path'].startswith('/liveData/plays/allPlays/')
+                      and (res['value'] == 'SHOT'
+                           or res['value'] == 'FACEOFF'
+                           or res['value'] == 'BLOCKED_SHOT'
+                           or res['value'] == 'STOP'
+                           or res['value'] == 'MISSED_SHOT'
+                           or res['value'] == 'GOAL'
+                           or res['value'] == 'TAKEAWAY'))]
         debug.log(goal_list)
 
+        for res in [re.findall(r'\d+', res['path']) for res in diff_list
+                    if 'value' in res
+                     and res['path'].startswith('/liveData/plays/allPlays/')
+                     and (self._has_value(res, 'SHOT')
+                          or self._has_value(res, 'FACEOFF')
+                          or self._has_value(res, 'BLOCKED_SHOT')
+                          or self._has_value(res, 'STOP')
+                          or self._has_value(res, 'MISSED_SHOT')
+                          or self._has_value(res, 'GOAL')
+                          or self._has_value(res, 'TAKEAWAY'))]:
+
+            goal_list.append(res)
+        debug.log(goal_list)
+
+        debug.log('entries')
         for entry_key in goal_list:
-            debug.log(entry_key)
+            #debug.log(entry_key)
             goal_items = [res for res in diff_list if len(entry_key) > 0 and entry_key[0] in res['path']]
             #debug.log(goal_items)
 
@@ -99,30 +122,32 @@ class DataSourceNhl(DataSource):
             e = Event(entry_key[0], None, EventResult(None, None, None, None, None), EventAbout(None, None, None, None), None)
 
             for item in goal_items:
+                if item['op'] == 'remove':
+                    continue
 
                 if item['path'].endswith('/about/periodTime'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.about.period_time = item['value']
                 elif item['path'].endswith('/about/eventId'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.about.event_id = item['value']
                 elif item['path'].endswith('/about/periodTimeRemaining'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.about.period_time_remaining = item['value']
                 elif item['path'].endswith('/about/dateTime'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.about.date_time = item['value']
                 elif item['path'].endswith('/result/description'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.result.description = item['value']
                 elif item['path'].endswith('/result/event'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.result.event = item['value']
                 elif item['path'].endswith('/result/eventCode'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.result.event_code = item['value']
                 elif item['path'].endswith('/result/eventTypeId'):
-                    debug.log(item['value'])
+                    #debug.log(item['value'])
                     e.result.event_type_id = item['value']
                 elif '/players/0' in item['path']:
                     pass
@@ -136,8 +161,18 @@ class DataSourceNhl(DataSource):
                 elif '/players/3' in item['path']:
                     pass
                     #debug.log(item['value'])
+                elif item['path'].startswith('/liveData/plays/allPlays/') and self._get_trailing_number(item['path']) is not None:
+                    #debug.log(item)
+                    e.result = self._parse_result(item['value']['result'])
+                    e.about = self._parse_about(item['value']['about'])
+                    p_l = []
+
+                    if 'players' in item['value']:
+                        for i in item['value']['players']:
+                            p_l.append(DataSourceNhl._parse_player(i))
+                        e.players = p_l
                 elif item['path'].endswith('/players'):
-                    debug.log(item['value'])
+                    #debug.log(item)
                     p_l = []
                     for i in item['value']:
                         player = i['player']
@@ -150,14 +185,17 @@ class DataSourceNhl(DataSource):
         for diff in diff_list:
             self._parse_diff(diff)
 
-        debug.log(event_list)
+        #debug.log(event_list)
 
     def _has_value(self, item, event_type):
-        debug.log('item')
-        debug.log(item)
+        #debug.log(item)
         #debug.log(len(item))
 
         return len(item) > 0 and 'value' in item and isinstance(item['value'], Iterable) and 'result' in item['value'] and 'eventTypeId' in item['value']['result'] and item['value']['result']['eventTypeId'] == event_type
+
+    def _get_trailing_number(self, s):
+        m = re.search(r'\d+$', s)
+        return int(m.group()) if m else None
 
     def _parse_diff(self, diff):
         pass
@@ -282,3 +320,31 @@ class DataSourceNhl(DataSource):
                         record,
                         shootout)
         return team
+
+    @staticmethod
+    def _parse_result(result):
+        return EventResult(result['event'],
+                           result['eventCode'],
+                           result['eventTypeId'],
+                           result['description'],
+                           result['secondaryType'] if 'secondaryType' in result else None)
+
+    @staticmethod
+    def _parse_about(about):
+        return EventAbout(about['period'],
+                          about['periodType'],
+                          about['periodTime'],
+                          DataSourceNhl._parse_goals(about['goals']))
+
+    @staticmethod
+    def _parse_goals(goals):
+        return EventGoals(goals['home'],
+                          goals['away'])
+
+    @staticmethod
+    def _parse_player(player):
+        return EventPlayer(player['player']['id'],
+                           player['player']['fullName'],
+                           player['player']['link'],
+                           player['playerType'],
+                           None)

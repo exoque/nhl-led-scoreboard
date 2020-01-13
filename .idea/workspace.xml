@@ -5,10 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/data_source_nhl.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_source_nhl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/event.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/event.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/renderer/game_day_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/game_day_renderer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/renderer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/renderer/rotate_screen_render.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/rotate_screen_render.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,7 +292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578852244505</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Added page indicator.">
+      <created>1578942150732</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1578942150732</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -336,7 +341,8 @@
     <MESSAGE value="Add game day renderer." />
     <MESSAGE value="Added version with graphics to game day renderer." />
     <MESSAGE value="Started implementation of live data parsing." />
-    <option name="LAST_COMMIT_MESSAGE" value="Started implementation of live data parsing." />
+    <MESSAGE value="Added page indicator." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added page indicator." />
   </component>
   <component name="WindowStateProjectService">
     <state x="497" y="276" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578091990323">
@@ -351,10 +357,10 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="662" y="192" key="#main/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578075255651" />
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1578852244369">
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1578942150486">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578852244369" />
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578942150486" />
     <state width="1597" height="466" key="DebuggerActiveHint" timestamp="1578860512901">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -367,22 +373,22 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="784" y="535" key="FileChooserDialogImpl/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578091844955" />
-    <state width="1897" height="336" key="GridCell.Tab.0.bottom" timestamp="1578942089767">
+    <state width="1897" height="336" key="GridCell.Tab.0.bottom" timestamp="1578946198467">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="336" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578942089767" />
-    <state width="1897" height="336" key="GridCell.Tab.0.center" timestamp="1578942089767">
+    <state width="1897" height="336" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578946198467" />
+    <state width="1897" height="336" key="GridCell.Tab.0.center" timestamp="1578946198467">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="336" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578942089767" />
-    <state width="1897" height="336" key="GridCell.Tab.0.left" timestamp="1578942089766">
+    <state width="1897" height="336" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578946198467" />
+    <state width="1897" height="336" key="GridCell.Tab.0.left" timestamp="1578946198467">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="336" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578942089766" />
-    <state width="1897" height="336" key="GridCell.Tab.0.right" timestamp="1578942089767">
+    <state width="1897" height="336" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578946198467" />
+    <state width="1897" height="336" key="GridCell.Tab.0.right" timestamp="1578946198467">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="336" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578942089767" />
+    <state width="1897" height="336" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578946198467" />
     <state width="1897" height="212" key="GridCell.Tab.1.bottom" timestamp="1578860642192">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -425,22 +431,22 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>222</line>
+          <line>260</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>230</line>
+          <line>268</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>150</line>
+          <line>185</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>144</line>
+          <line>179</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -450,8 +456,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>83</line>
+          <line>86</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
+          <line>109</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

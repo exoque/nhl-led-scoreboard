@@ -38,13 +38,20 @@ class RotateScreenRenderer(Renderer):
     def _draw_page_indicator(self, draw):
         color = ImageColor.getcolor('white', 'RGB')
         color_current_item = ImageColor.getcolor('red', 'RGB')
-        num_items = len(self.data) - 1
+        num_items = len(self.data)
         length = num_items * 3
+        small = length > 36
+
+        if small:
+            length = num_items * 2
+
         x = (self.screen_width - length) / 2
+        y = 30
+        size = 0 if small else 1
 
         for i in range(0, num_items):
-            draw.rectangle([x, 30, x + 1, 31], color if i != self.current_item else color_current_item)
-            x = x + 3
+            draw.rectangle([x, y, x + size, y + size], color if i != self.current_item else color_current_item)
+            x = x + (size + 2)
 
     @staticmethod
     def _get_last_part(text):

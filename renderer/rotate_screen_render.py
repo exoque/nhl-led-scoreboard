@@ -18,6 +18,7 @@ class RotateScreenRenderer(Renderer):
         self.display_time = 5
         self.start_time = None
         self.current_item = 0
+        self.last_item = -1
 
     @abstractmethod
     def _do_render(self, image, draw, frame_time):
@@ -26,14 +27,21 @@ class RotateScreenRenderer(Renderer):
     def _get_item_to_display(self):
         if self.start_time is not None:
             debug.log(time.time() - self.start_time)
+            self.last_item = self.current_item
+
             if self.display_time <= time.time() - self.start_time:
+                self.last_item = self.current_item
                 self.current_item = (self.current_item + 1) % len(self.data)
                 self.start_time = time.time()
         else:
             self.start_time = time.time()
 
         debug.log(self.current_item)
+        debug.log("last item: {}".format(self.last_item))
         return self.data[self.current_item]
+
+    def _item_has_changed(self):
+        return self.current_item != self.last_item
 
     def _draw_page_indicator(self, draw):
         color = ImageColor.getcolor('white', 'RGB')

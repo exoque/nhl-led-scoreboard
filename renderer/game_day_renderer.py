@@ -18,10 +18,17 @@ class GameDayRenderer(RotateScreenRenderer):
 
         data = self._get_item_to_display()
 
+        if not self._item_has_changed():
+            return
+        else:
+            debug.log('rendering')
+
         if False:
             self._render_text_version(data, draw)
         else:
             self._render_graphical_version(data, image, draw)
+
+        self._draw_page_indicator(draw)
 
         self.render_surface.render(image)
 
@@ -67,7 +74,6 @@ class GameDayRenderer(RotateScreenRenderer):
             self.__draw_status_text(draw, game_date, time_period, score)
 
         self.__draw_team_logos(image, data.home_team_id, data.away_team_id)
-        self._draw_page_indicator(draw)
 
     def __draw_team_logo(self, image, team_type, team_id):
         team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]

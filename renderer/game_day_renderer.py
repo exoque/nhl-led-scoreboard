@@ -3,7 +3,7 @@ from calendar import month_abbr
 from PIL import Image
 
 from renderer.rotate_screen_render import RotateScreenRenderer
-from utils import center_text, parse_today
+from utils import parse_today
 
 import debug
 
@@ -43,18 +43,31 @@ class GameDayRenderer(RotateScreenRenderer):
     def _render_graphical_version(self, data, image, draw):
         _, month, day = parse_today(self.config)
 
-        game_date = '{} {}'.format(month_abbr[month], day)
-        score = '{}-{}'.format(data.away_score, data.home_score)
-        period = data.period
+        debug.log(data.game_status)
 
-        # Only show the period if the game ended in Overtime "OT" or Shootouts "SO"
-        if period == "OT" or period == "SO":
-            time_period = period
-        else:
+        if self.__is_pregame(data):
+            self.__draw_status_text(draw, 'TODAY', data.game_time, 'VS')
+        elif self.__is_live_game(data):
+            score = '{}-{}'.format(data.away_score, data.home_score)
+            period = data.period
             time_period = data.time
 
-        self.__draw_status_text(draw, game_date, time_period, score)
+            self.__draw_status_text(draw, period, time_period, score)
+        else:
+            game_date = '{} {}'.format(month_abbr[month], day)
+            score = '{}-{}'.format(data.away_score, data.home_score)
+            period = data.period
+
+            # Only show the period if the game ended in Overtime "OT" or Shootouts "SO"
+            if period == "OT" or period == "SO":
+                time_period = period
+            else:
+                time_period = data.time
+
+            self.__draw_status_text(draw, game_date, time_period, score)
+
         self.__draw_team_logos(image, data.home_team_id, data.away_team_id)
+        self._draw_page_indicator(draw)
 
     def __draw_team_logo(self, image, team_type, team_id):
         team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
@@ -70,4 +83,12 @@ class GameDayRenderer(RotateScreenRenderer):
         self._render_center_text(draw, first_line, 1)
         self._render_center_text(draw, second_line, 8)
         self._render_center_text(draw, third_line, 15, self.font)
+
+    @staticmethod
+    def __is_pregame(data):
+        return data.game_status == 1 or data.game_status == 2
+
+    @staticmethod
+    def __is_live_game(data):
+        return data.game_status == 3 or data.game_status == 4
 

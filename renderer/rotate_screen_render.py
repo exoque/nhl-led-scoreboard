@@ -1,5 +1,7 @@
 from abc import abstractmethod
 
+from PIL import ImageColor
+
 from renderer.renderer import Renderer
 import debug
 import time
@@ -13,7 +15,7 @@ class RotateScreenRenderer(Renderer):
         self.data = data
         self.render_surface = render_surface
 
-        self.display_time = 3
+        self.display_time = 5
         self.start_time = None
         self.current_item = 0
 
@@ -32,6 +34,17 @@ class RotateScreenRenderer(Renderer):
 
         debug.log(self.current_item)
         return self.data[self.current_item]
+
+    def _draw_page_indicator(self, draw):
+        color = ImageColor.getcolor('white', 'RGB')
+        color_current_item = ImageColor.getcolor('red', 'RGB')
+        num_items = len(self.data) - 1
+        length = num_items * 3
+        x = (self.screen_width - length) / 2
+
+        for i in range(0, num_items):
+            draw.rectangle([x, 30, x + 1, 31], color if i != self.current_item else color_current_item)
+            x = x + 3
 
     @staticmethod
     def _get_last_part(text):

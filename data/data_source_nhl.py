@@ -1,4 +1,5 @@
 import re
+from collections import Iterable
 
 from data.data_source import DataSource
 from data.event import EventGoals, EventPlayer, Event, EventResult, EventAbout
@@ -49,7 +50,7 @@ class DataSourceNhl(DataSource):
         return games
 
     def load_game_stats(self, key):
-        url = '{0}{1}'.format(self.url, 'game/2019020691/feed/live')
+        url = '{0}game/{1}/feed/live'.format(self.url, key)
         result = self._execute_request(url)
         live_data = result['liveData']
         plays = live_data['plays']
@@ -69,23 +70,28 @@ class DataSourceNhl(DataSource):
     def load_game_stats_update(self, key, time_stamp):
         url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.url, key, time_stamp)
         result = self._execute_request(url)
-        debug.log(result)
+        #debug.log(result)
+        event_list = []
+
         diff_list = result[0]['diff']
 
         time_stamp = [res['value'] for res in diff_list if res['path'] == '/metaData/timeStamp'][0]
-        debug.log(time_stamp)
+        #debug.log(time_stamp)
 
         #goal_list = [[re.findall(r'\d+', res['path']), res['path']] for res in diff_list if 'value' in res and res['value'] == 'FACEOFF']
         #debug.log(goal_list)
 
         goal_list = [re.findall(r'\d+', res['path']) for res in diff_list if
-                     'value' in res and res['value'] == 'SHOT']
+                     'value' in res and (res['value'] == 'SHOT' or res['value'] == 'FACEOFF' or res['value'] == 'BLOCKED_SHOT')]
+        #debug.log(goal_list)
+
+        goal_list = [re.findall(r'\d+', res['path']) for res in diff_list if 'value' in res and (self._has_value(res, 'SHOT') or self._has_value(res, 'FACEOFF') or self._has_value(res, 'BLOCKED_SHOT'))]
         debug.log(goal_list)
 
         for entry_key in goal_list:
             debug.log(entry_key)
             goal_items = [res for res in diff_list if len(entry_key) > 0 and entry_key[0] in res['path']]
-            debug.log(goal_items)
+            #debug.log(goal_items)
 
             if len(goal_items) == 0:
                 continue
@@ -119,13 +125,17 @@ class DataSourceNhl(DataSource):
                     debug.log(item['value'])
                     e.result.event_type_id = item['value']
                 elif '/players/0' in item['path']:
-                    debug.log(item['value'])
+                    pass
+                    #debug.log(item['value'])
                 elif '/players/1' in item['path']:
-                    debug.log(item['value'])
+                    pass
+                    #debug.log(item['value'])
                 elif '/players/2' in item['path']:
-                    debug.log(item['value'])
+                    pass
+                    #debug.log(item['value'])
                 elif '/players/3' in item['path']:
-                    debug.log(item['value'])
+                    pass
+                    #debug.log(item['value'])
                 elif item['path'].endswith('/players'):
                     debug.log(item['value'])
                     p_l = []
@@ -135,12 +145,23 @@ class DataSourceNhl(DataSource):
                     e.players = p_l
 
             debug.log(e)
+            event_list.append(e)
 
         for diff in diff_list:
             self._parse_diff(diff)
 
+        debug.log(event_list)
+
+    def _has_value(self, item, event_type):
+        debug.log('item')
+        debug.log(item)
+        #debug.log(len(item))
+
+        return len(item) > 0 and 'value' in item and isinstance(item['value'], Iterable) and 'result' in item['value'] and 'eventTypeId' in item['value']['result'] and item['value']['result']['eventTypeId'] == event_type
+
     def _parse_diff(self, diff):
-        debug.log(diff)
+        pass
+        #debug.log(diff)
 
     def load_game_for_team(self, key, date):
         pass
@@ -253,7 +274,7 @@ class DataSourceNhl(DataSource):
 
         record = GameTeamLeagueRecord(league_record['wins'],
                                       league_record['losses'],
-                                      league_record['ot'])
+                                      league_record['ot'] if 'ot' in league_record else 0)
 
         team = GameTeam(int(team['team']['id']),
                         team['team']['name'],

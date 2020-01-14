@@ -30,10 +30,7 @@ class GameDayRenderer(RotateScreenRenderer):
 
         self._draw_page_indicator(draw)
 
-        self.render_surface.render(image)
-
-        # Refresh the Data image.
-        image = Image.new('RGB', (self.screen_width, self.screen_height))
+        self._refresh_screen(image)
 
     def _render_text_version(self, data, draw):
         if data.game_status < 7:

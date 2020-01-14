@@ -38,7 +38,7 @@ nhl_data_source = DataSourceNhl(config)
 #print(nhl_data_source.load_game_stats_update(2019020691, '20200111_064830'))
 #print(nhl_data_source.load_game_stats_update(2019020693, '20200112_023402'))
 
-print(nhl_data_source.load_game_stats_update(2019020693, '1'))
+#print(nhl_data_source.load_game_stats_update(2019020693, '1'))
 
 
 
@@ -46,5 +46,5 @@ data = Data(config)
 #matrixRenderSurface = MatrixRenderSurface(matrixOptions)
 #MainRenderer(matrixRenderSurface, data).render()
 
-#imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
-#MainRenderer(imageRenderSurface, data).render()
+imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
+MainRenderer(imageRenderSurface, data).render()

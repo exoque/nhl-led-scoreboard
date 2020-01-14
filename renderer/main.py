@@ -4,6 +4,7 @@ from rgbmatrix import graphics
 from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer
 from renderer.game_day_renderer import GameDayRenderer
+from renderer.scrolling_text_renderer import ScrollingTextRenderer
 from utils import center_text
 from calendar import month_abbr
 from renderer.screen_config import screenConfig
@@ -39,7 +40,8 @@ class MainRenderer:
         #while True:
 
         #self.__render_test_boxscore()
-        self.__render_test_game_day()
+        #self.__render_test_game_day()
+        self.__render_test_scrolling_text()
 
         '''
         while True:
@@ -84,6 +86,21 @@ class MainRenderer:
             self.frame_time = time.time()
 
             game_day_renderer.render(self.image, self.frame_time)
+            # self.render_surface.render(self.image)
+
+            # Refresh the Data image.
+            self.image = Image.new('RGB', (self.width, self.height))
+            self.draw = ImageDraw.Draw(self.image)
+
+            time.sleep(1)
+
+    def __render_test_scrolling_text(self):
+        scrolling_text_renderer = ScrollingTextRenderer("This is a really long text which doesn't fit on the screen so it has to be scrolled.", self.screen_config, self.data.config, self.render_surface)
+
+        while True:
+            self.frame_time = time.time()
+
+            scrolling_text_renderer.render(self.image, self.frame_time)
             # self.render_surface.render(self.image)
 
             # Refresh the Data image.

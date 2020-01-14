@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/boxscore_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/boxscore_renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/game_day_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/game_day_renderer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renderer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renderer/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/rotate_screen_render.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/rotate_screen_render.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -315,7 +317,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578947335742</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Only render screen if data changed.">
+      <created>1578953036305</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1578953036305</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -360,7 +369,8 @@
     <MESSAGE value="Added page indicator." />
     <MESSAGE value="Extended event parsing." />
     <MESSAGE value="Show correct number of items in page indicator.&#10;Add small version if there are many items." />
-    <option name="LAST_COMMIT_MESSAGE" value="Show correct number of items in page indicator.&#10;Add small version if there are many items." />
+    <MESSAGE value="Only render screen if data changed." />
+    <option name="LAST_COMMIT_MESSAGE" value="Only render screen if data changed." />
   </component>
   <component name="WindowStateProjectService">
     <state x="497" y="276" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578091990323">
@@ -375,14 +385,14 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="662" y="192" key="#main/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578075255651" />
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1578947335604">
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1578953036144">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578947335604" />
-    <state width="1597" height="466" key="DebuggerActiveHint" timestamp="1578860512901">
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578953036144" />
+    <state width="1597" height="466" key="DebuggerActiveHint" timestamp="1579024807748">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1597" height="466" key="DebuggerActiveHint/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578860512901" />
+    <state width="1597" height="466" key="DebuggerActiveHint/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579024807748" />
     <state x="96" y="100" width="1728" height="960" key="DiffContextDialog" timestamp="1578227228257">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -391,38 +401,42 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="784" y="535" key="FileChooserDialogImpl/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578091844955" />
-    <state width="1897" height="259" key="GridCell.Tab.0.bottom" timestamp="1578952967703">
+    <state width="1897" height="259" key="GridCell.Tab.0.bottom" timestamp="1579038605686">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578952967703" />
-    <state width="1897" height="259" key="GridCell.Tab.0.center" timestamp="1578952967702">
+    <state width="1897" height="259" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
+    <state width="1897" height="259" key="GridCell.Tab.0.center" timestamp="1579038605686">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578952967702" />
-    <state width="1897" height="259" key="GridCell.Tab.0.left" timestamp="1578952967702">
+    <state width="1897" height="259" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
+    <state width="1897" height="259" key="GridCell.Tab.0.left" timestamp="1579038605686">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578952967702" />
-    <state width="1897" height="259" key="GridCell.Tab.0.right" timestamp="1578952967702">
+    <state width="1897" height="259" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
+    <state width="1897" height="259" key="GridCell.Tab.0.right" timestamp="1579038605686">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578952967702" />
-    <state width="1897" height="212" key="GridCell.Tab.1.bottom" timestamp="1578860642192">
+    <state width="1897" height="259" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
+    <state width="1897" height="212" key="GridCell.Tab.1.bottom" timestamp="1579025064409">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578860642192" />
-    <state width="1897" height="212" key="GridCell.Tab.1.center" timestamp="1578860642192">
+    <state width="1897" height="212" key="GridCell.Tab.1.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
+    <state width="1897" height="212" key="GridCell.Tab.1.center" timestamp="1579025064409">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578860642192" />
-    <state width="1897" height="212" key="GridCell.Tab.1.left" timestamp="1578860642192">
+    <state width="1897" height="212" key="GridCell.Tab.1.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
+    <state width="1897" height="212" key="GridCell.Tab.1.left" timestamp="1579025064409">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578860642192" />
-    <state width="1897" height="212" key="GridCell.Tab.1.right" timestamp="1578860642192">
+    <state width="1897" height="212" key="GridCell.Tab.1.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
+    <state width="1897" height="212" key="GridCell.Tab.1.right" timestamp="1579025064409">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578860642192" />
+    <state width="1897" height="212" key="GridCell.Tab.1.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
+    <state x="778" y="513" key="ReplaceDuplicatesPrompt" timestamp="1579025709119">
+      <screen x="0" y="0" width="1920" height="1156" />
+    </state>
+    <state x="778" y="513" key="ReplaceDuplicatesPrompt/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025709119" />
     <state x="457" y="213" key="SettingsEditor" timestamp="1578601721268">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -469,7 +483,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/renderer/main.py</url>
-          <line>60</line>
+          <line>62</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -481,6 +495,11 @@
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
           <line>109</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/renderer/scrolling_text_renderer.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

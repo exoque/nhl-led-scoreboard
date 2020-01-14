@@ -23,7 +23,4 @@ class BoxscoreRenderer(RotateScreenRenderer):
         self._render_left_text(draw, self._get_last_part(goal_data.assist1), 16)
         self._render_left_text(draw, self._get_last_part(goal_data.assist2), 24)
 
-        self.render_surface.render(image)
-
-        # Refresh the Data image.
-        image = Image.new('RGB', (self.screen_width, self.screen_height))
+        self._refresh_screen(image)

@@ -10,9 +10,6 @@ from utils import convert_time
 import debug
 
 
-
-
-
 class DataSourceNhl(DataSource):
 
     def load_teams(self):
@@ -73,7 +70,6 @@ class DataSourceNhl(DataSource):
     def load_game_stats_update(self, key, time_stamp):
         url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.url, key, time_stamp)
         result = self._execute_request(url)
-        #debug.log(result)
         event_list = []
 
         diff_list = result[0]['diff']
@@ -81,20 +77,16 @@ class DataSourceNhl(DataSource):
         time_stamp = [res['value'] for res in diff_list if res['path'] == '/metaData/timeStamp'][0]
         debug.log(time_stamp)
 
-        #goal_list = [[re.findall(r'\d+', res['path']), res['path']] for res in diff_list if 'value' in res and res['value'] == 'FACEOFF']
-        #debug.log(goal_list)
-
         goal_list = [re.findall(r'\d+', res['path']) for res in diff_list
                      if ('value' in res
-                      and res['path'].startswith('/liveData/plays/allPlays/')
-                      and (res['value'] == 'SHOT'
+                        and res['path'].startswith('/liveData/plays/allPlays/')
+                        and (res['value'] == 'SHOT'
                            or res['value'] == 'FACEOFF'
                            or res['value'] == 'BLOCKED_SHOT'
                            or res['value'] == 'STOP'
                            or res['value'] == 'MISSED_SHOT'
                            or res['value'] == 'GOAL'
                            or res['value'] == 'TAKEAWAY'))]
-        debug.log(goal_list)
 
         for res in [re.findall(r'\d+', res['path']) for res in diff_list
                     if 'value' in res
@@ -108,13 +100,11 @@ class DataSourceNhl(DataSource):
                           or self._has_value(res, 'TAKEAWAY'))]:
 
             goal_list.append(res)
-        debug.log(goal_list)
 
-        debug.log('entries')
         for entry_key in goal_list:
-            #debug.log(entry_key)
-            goal_items = [res for res in diff_list if len(entry_key) > 0 and entry_key[0] in res['path']]
-            #debug.log(goal_items)
+            goal_items = [res for res in diff_list
+                            if len(entry_key) > 0
+                            and entry_key[0] in res['path']]
 
             if len(goal_items) == 0:
                 continue
@@ -126,72 +116,70 @@ class DataSourceNhl(DataSource):
                     continue
 
                 if item['path'].endswith('/about/periodTime'):
-                    #debug.log(item['value'])
                     e.about.period_time = item['value']
                 elif item['path'].endswith('/about/eventId'):
-                    #debug.log(item['value'])
                     e.about.event_id = item['value']
                 elif item['path'].endswith('/about/periodTimeRemaining'):
-                    #debug.log(item['value'])
                     e.about.period_time_remaining = item['value']
                 elif item['path'].endswith('/about/dateTime'):
-                    #debug.log(item['value'])
                     e.about.date_time = item['value']
                 elif item['path'].endswith('/result/description'):
-                    #debug.log(item['value'])
                     e.result.description = item['value']
                 elif item['path'].endswith('/result/event'):
-                    #debug.log(item['value'])
                     e.result.event = item['value']
                 elif item['path'].endswith('/result/eventCode'):
-                    #debug.log(item['value'])
                     e.result.event_code = item['value']
                 elif item['path'].endswith('/result/eventTypeId'):
-                    #debug.log(item['value'])
                     e.result.event_type_id = item['value']
                 elif '/players/0' in item['path']:
-                    pass
-                    #debug.log(item['value'])
+                    self.__init_player_if_new(e, 0)
+                    self.__parse_player(e, item, 0)
                 elif '/players/1' in item['path']:
-                    pass
-                    #debug.log(item['value'])
+                    self.__init_player_if_new(e, 1)
+                    self.__parse_player(e, item, 1)
                 elif '/players/2' in item['path']:
-                    pass
-                    #debug.log(item['value'])
+                    self.__init_player_if_new(e, 2)
+                    self.__parse_player(e, item, 2)
                 elif '/players/3' in item['path']:
-                    pass
-                    #debug.log(item['value'])
+                    self.__init_player_if_new(e, 3)
+                    self.__parse_player(e, item, 3)
                 elif item['path'].startswith('/liveData/plays/allPlays/') and self._get_trailing_number(item['path']) is not None:
-                    #debug.log(item)
                     e.result = self._parse_result(item['value']['result'])
                     e.about = self._parse_about(item['value']['about'])
                     p_l = []
-
                     if 'players' in item['value']:
                         for i in item['value']['players']:
                             p_l.append(DataSourceNhl._parse_player(i))
                         e.players = p_l
                 elif item['path'].endswith('/players'):
-                    #debug.log(item)
                     p_l = []
                     for i in item['value']:
-                        player = i['player']
-                        p_l.append(EventPlayer(player['id'], player['fullName'], player['link'], i['playerType'], None))
+                        p_l.append(DataSourceNhl._parse_player(i))
                     e.players = p_l
 
-            debug.log(e)
             event_list.append(e)
 
+        for e in event_list: debug.log(e)
         for diff in diff_list:
             self._parse_diff(diff)
 
-        #debug.log(event_list)
+    def __parse_player(self, e, item, index):
+        if item['path'].endswith('fullName'):
+            e.players[index].full_name = item['value']
+        elif item['path'].endswith('id'):
+            e.players[index].key = item['value']
+        elif item['path'].endswith('link'):
+            e.players[index].link = item['value']
+        elif item['path'].endswith('playerType'):
+            e.players[index].player_type = item['value']
 
     def _has_value(self, item, event_type):
-        #debug.log(item)
-        #debug.log(len(item))
-
-        return len(item) > 0 and 'value' in item and isinstance(item['value'], Iterable) and 'result' in item['value'] and 'eventTypeId' in item['value']['result'] and item['value']['result']['eventTypeId'] == event_type
+        return len(item) > 0 \
+               and 'value' in item \
+               and isinstance(item['value'], Iterable) \
+               and 'result' in item['value'] \
+               and 'eventTypeId' in item['value']['result'] \
+               and item['value']['result']['eventTypeId'] == event_type
 
     def _get_trailing_number(self, s):
         m = re.search(r'\d+$', s)
@@ -199,7 +187,6 @@ class DataSourceNhl(DataSource):
 
     def _parse_diff(self, diff):
         pass
-        #debug.log(diff)
 
     def load_game_for_team(self, key, date):
         pass
@@ -348,3 +335,12 @@ class DataSourceNhl(DataSource):
                            player['player']['link'],
                            player['playerType'],
                            None)
+
+    def __init_player_if_new(self, e, index):
+        if e.players is None:
+            e.players = []
+
+        if 0 <= index > len(e.players) - 1:
+            e.players.append(EventPlayer(None, None, None, None, None))
+
+

@@ -1,5 +1,8 @@
+import sys
 from abc import ABC, abstractmethod
 import requests
+import simplejson
+
 import debug
 
 
@@ -45,4 +48,7 @@ class DataSource(ABC):
             debug.log(data)
             return data
         except requests.exceptions.RequestException:
-            print("Error encountered getting teams info, Can't reach the NHL API")
+            print("Error encountered getting teams info, Can't reach the NHL API.")
+        except simplejson.errors.JSONDecodeError:
+            print("Error parsing JSON.")
+            sys.exit(1)

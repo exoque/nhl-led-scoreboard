@@ -9,8 +9,8 @@ import debug
 
 
 class GameDayRenderer(RotateScreenRenderer):
-    def __init__(self, data, teams, screen_config, config, render_surface):
-        super().__init__(data, screen_config, config, render_surface)
+    def __init__(self, data, teams, config, render_surface):
+        super().__init__(data, config, render_surface)
         self.teams = teams
 
     def _do_render(self, image, draw, frame_time):
@@ -37,15 +37,16 @@ class GameDayRenderer(RotateScreenRenderer):
             time_text = "{} {}".format(data.time, data.period) if data.time is not None else data.game_time
         else:
             time_text = data.time
-        self._render_center_text(draw, time_text, 0)
-        self._render_left_text(draw, self.teams[data.away_team_id].name, 8)
-        self._render_left_text(draw, self.teams[data.home_team_id].name, 16)
+        self._render_center_text(draw, time_text, self.text_y_pos)
+        self._render_left_text(draw, self.teams[data.away_team_id].name, self._move_to_next_line())
         if data.time is not None:
-            self._render_right_text(draw, data.away_score, 8)
-            self._render_right_text(draw, data.home_score, 16)
+            self._render_right_text(draw, data.away_score, self.text_y_pos)
+        self._render_left_text(draw, self.teams[data.home_team_id].name, self._move_to_next_line())
+        if data.time is not None:
+            self._render_right_text(draw, data.home_score, self.text_y_pos)
 
     def _render_graphical_version(self, data, image, draw):
-        _, month, day = parse_today(self.config)
+        _, month, day = parse_today(self.config.app_config)
 
         debug.log(data.game_status)
 
@@ -73,7 +74,7 @@ class GameDayRenderer(RotateScreenRenderer):
         self.__draw_team_logos(image, data.home_team_id, data.away_team_id)
 
     def __draw_team_logo(self, image, team_type, team_id):
-        team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
+        team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.teams[team_id].abbreviation))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
         team_logo.close()
@@ -84,8 +85,8 @@ class GameDayRenderer(RotateScreenRenderer):
 
     def __draw_status_text(self, draw, first_line, second_line, third_line):
         self._render_center_text(draw, first_line, 1)
-        self._render_center_text(draw, second_line, 8)
-        self._render_center_text(draw, third_line, 15, self.font)
+        self._render_center_text(draw, second_line, self._move_to_next_line())
+        self._render_center_text(draw, third_line, self._move_to_next_line()-1, self.font)
 
     @staticmethod
     def __is_pregame(data):

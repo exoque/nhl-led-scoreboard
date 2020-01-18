@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c5a4a7a4-749f-46cf-9832-449c801eb53d" name="Default Changelist" comment="Extended event parsing.">
-      <change afterPath="$PROJECT_DIR$/renderer/scrolling_text_renderer.py" afterDir="false" />
+    <list default="true" id="c5a4a7a4-749f-46cf-9832-449c801eb53d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/renderer/renderer_config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/data_source.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_source.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/data_source_nhl.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_source_nhl.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/boxscore_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/boxscore_renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/game_day_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/game_day_renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/renderer/rotate_screen_render.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/rotate_screen_render.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renderer/screen_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/screen_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/renderer/scrolling_text_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/renderer/scrolling_text_renderer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -385,14 +388,14 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="662" y="192" key="#main/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578075255651" />
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1578953036144">
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2" timestamp="1579356572050">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578953036144" />
-    <state width="1597" height="466" key="DebuggerActiveHint" timestamp="1579024807748">
+    <state x="509" y="134" width="1091" height="946" key="CommitChangelistDialog2/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579356572050" />
+    <state width="1597" height="466" key="DebuggerActiveHint" timestamp="1579208176247">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1597" height="466" key="DebuggerActiveHint/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579024807748" />
+    <state width="1597" height="466" key="DebuggerActiveHint/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579208176247" />
     <state x="96" y="100" width="1728" height="960" key="DiffContextDialog" timestamp="1578227228257">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -401,38 +404,38 @@
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
     <state x="784" y="535" key="FileChooserDialogImpl/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1578091844955" />
-    <state width="1897" height="259" key="GridCell.Tab.0.bottom" timestamp="1579038605686">
+    <state width="1897" height="224" key="GridCell.Tab.0.bottom" timestamp="1579356526725">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
-    <state width="1897" height="259" key="GridCell.Tab.0.center" timestamp="1579038605686">
+    <state width="1897" height="224" key="GridCell.Tab.0.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579356526725" />
+    <state width="1897" height="224" key="GridCell.Tab.0.center" timestamp="1579356526724">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
-    <state width="1897" height="259" key="GridCell.Tab.0.left" timestamp="1579038605686">
+    <state width="1897" height="224" key="GridCell.Tab.0.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579356526724" />
+    <state width="1897" height="224" key="GridCell.Tab.0.left" timestamp="1579356526724">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
-    <state width="1897" height="259" key="GridCell.Tab.0.right" timestamp="1579038605686">
+    <state width="1897" height="224" key="GridCell.Tab.0.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579356526724" />
+    <state width="1897" height="224" key="GridCell.Tab.0.right" timestamp="1579356526725">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="259" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579038605686" />
-    <state width="1897" height="212" key="GridCell.Tab.1.bottom" timestamp="1579025064409">
+    <state width="1897" height="224" key="GridCell.Tab.0.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579356526725" />
+    <state width="1897" height="338" key="GridCell.Tab.1.bottom" timestamp="1579208518505">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
-    <state width="1897" height="212" key="GridCell.Tab.1.center" timestamp="1579025064409">
+    <state width="1897" height="338" key="GridCell.Tab.1.bottom/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579208518505" />
+    <state width="1897" height="338" key="GridCell.Tab.1.center" timestamp="1579208518505">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
-    <state width="1897" height="212" key="GridCell.Tab.1.left" timestamp="1579025064409">
+    <state width="1897" height="338" key="GridCell.Tab.1.center/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579208518505" />
+    <state width="1897" height="338" key="GridCell.Tab.1.left" timestamp="1579208518505">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
-    <state width="1897" height="212" key="GridCell.Tab.1.right" timestamp="1579025064409">
+    <state width="1897" height="338" key="GridCell.Tab.1.left/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579208518505" />
+    <state width="1897" height="338" key="GridCell.Tab.1.right" timestamp="1579208518505">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
-    <state width="1897" height="212" key="GridCell.Tab.1.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579025064409" />
+    <state width="1897" height="338" key="GridCell.Tab.1.right/0.0.1920.1156/1920.0.1600.1200@0.0.1920.1156" timestamp="1579208518505" />
     <state x="778" y="513" key="ReplaceDuplicatesPrompt" timestamp="1579025709119">
       <screen x="0" y="0" width="1920" height="1156" />
     </state>
@@ -463,43 +466,43 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>260</line>
+          <line>247</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>268</line>
+          <line>255</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>185</line>
+          <line>163</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>179</line>
+          <line>157</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/renderer/main.py</url>
-          <line>62</line>
+          <line>66</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
-          <line>109</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/renderer/scrolling_text_renderer.py</url>
-          <line>15</line>
+          <line>14</line>
           <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
+          <line>134</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/data/data_source_nhl.py</url>
+          <line>343</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

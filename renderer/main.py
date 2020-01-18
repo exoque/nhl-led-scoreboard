@@ -4,10 +4,11 @@ from rgbmatrix import graphics
 from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer
 from renderer.game_day_renderer import GameDayRenderer
+from renderer.renderer_config import RendererConfig
 from renderer.scrolling_text_renderer import ScrollingTextRenderer
 from utils import center_text
 from calendar import month_abbr
-from renderer.screen_config import screenConfig
+from renderer.screen_config import ScreenConfig
 from renderer.animation_renderer import AnimationRenderer
 from renderer.team_logo_renderer import TeamLogoRenderer
 from data.data_source import DataSource
@@ -21,9 +22,9 @@ class MainRenderer:
         self.animation_renderer = AnimationRenderer(self.render_surface)
         self.data = data
         self.frame_time = time.time()
-        self.screen_config = screenConfig("64x32_config", self.frame_time)
-        self.width = 64
-        self.height = 32
+        self.screen_config = ScreenConfig("64x32_config", self.frame_time)
+        self.width = self.screen_config.width
+        self.height = self.screen_config.height
 
 
 
@@ -35,13 +36,16 @@ class MainRenderer:
         self.font = ImageFont.truetype("fonts/score_large.otf", 16)
         self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", 8)
 
+    def _get_renderer_config(self):
+        return RendererConfig(self.screen_config, self.data.config)
+
     def render(self):
         # loop through the different state.
         #while True:
 
         #self.__render_test_boxscore()
-        #self.__render_test_game_day()
-        self.__render_test_scrolling_text()
+        self.__render_test_game_day()
+        #self.__render_test_scrolling_text()
 
         '''
         while True:
@@ -62,7 +66,7 @@ class MainRenderer:
         #data = nhl_data_source.load_game_stats(2019020691)
         data = nhl_data_source.load_game_stats(2019020703)
         teams = nhl_data_source.load_teams()
-        box_score_renderer = BoxscoreRenderer(data, teams, self.screen_config, self.data.config, self.render_surface)
+        box_score_renderer = BoxscoreRenderer(data, teams, self._get_renderer_config(), self.render_surface)
 
         while True:
             self.frame_time = time.time()
@@ -78,9 +82,9 @@ class MainRenderer:
 
     def __render_test_game_day(self):
         nhl_data_source = DataSourceNhl(self.data.config)
-        data = nhl_data_source.load_day_schedule("2020-01-14")
+        data = nhl_data_source.load_day_schedule("2020-01-16")
         teams = nhl_data_source.load_teams()
-        game_day_renderer = GameDayRenderer(data, teams, self.screen_config, self.data.config, self.render_surface)
+        game_day_renderer = GameDayRenderer(data, teams, self._get_renderer_config(), self.render_surface)
 
         while True:
             self.frame_time = time.time()
@@ -95,7 +99,7 @@ class MainRenderer:
             time.sleep(1)
 
     def __render_test_scrolling_text(self):
-        scrolling_text_renderer = ScrollingTextRenderer("This is a really long text which doesn't fit on the screen so it has to be scrolled.", self.screen_config, self.data.config, self.render_surface)
+        scrolling_text_renderer = ScrollingTextRenderer("This is a really long text which doesn't fit on the screen so it has to be scrolled.", self._get_renderer_config(), self.render_surface)
 
         while True:
             self.frame_time = time.time()

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from math import floor
 
 from PIL import ImageFont, ImageDraw, Image
 
@@ -8,13 +9,12 @@ from utils import center_text, right_text
 class Renderer(ABC):
 
     def __init__(self, config, render_surface):
-        self.font = ImageFont.truetype("fonts/score_large.otf", 16)
-        self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", 8)
-        self.text_color = (255, 255, 255)
-        self.screen_width = 64
-        self.screen_height = 32
         self.config = config
+        self.font = ImageFont.truetype("fonts/score_large.otf", floor(self.config.screen_config.height / 2))
+        self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", floor(self.config.screen_config.height / 4))
+        self.text_color = (255, 255, 255)
         self.render_surface = render_surface
+        self.text_y_pos = 0
 
     def render(self, image, frame_time):
         draw = ImageDraw.Draw(image)
@@ -28,7 +28,7 @@ class Renderer(ABC):
         self.render_surface.render(image)
 
         # Refresh the Data image.
-        image = Image.new('RGB', (self.screen_width, self.screen_height))
+        image = Image.new('RGB', (self._get_screen_width(), self._get_screen_height()))
 
     def _render_center_text(self, draw, text, y, font=None):
         x = center_text(self._get_text_length(font, text), self._get_center())
@@ -38,7 +38,7 @@ class Renderer(ABC):
         self._render_text(draw, text, 1, y, font)
 
     def _render_right_text(self, draw, text, y, font=None):
-        x = right_text(self._get_text_length(font, text), self.screen_width)
+        x = right_text(self._get_text_length(font, text), self._get_screen_width())
         self._render_text(draw, text, x, y, font)
 
     def _render_text(self, draw, text, x, y, font=None):
@@ -50,7 +50,20 @@ class Renderer(ABC):
         return self.__get_font(font).getsize(str(text))[0]
 
     def _get_center(self):
-        return self.screen_width / 2
+        return self._get_screen_width() / 2
 
     def __get_font(self, font):
         return self.font_mini if font is None else font
+
+    def _get_screen_width(self):
+        return self.config.screen_config.width
+
+    def _get_screen_height(self):
+        return self.config.screen_config.height
+
+    def _move_to_next_line(self):
+        self.text_y_pos = self.text_y_pos + (self._get_screen_height() / 4)
+        return self.text_y_pos
+
+    def _get_line_height(self):
+        return self._get_screen_height() / 4

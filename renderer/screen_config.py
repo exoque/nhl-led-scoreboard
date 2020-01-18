@@ -4,11 +4,14 @@ import os
 import sys
 import debug
 
-class screenConfig:
+
+class ScreenConfig:
     def __init__(self, filename_base, frame_time):
         json = self.__get_config(filename_base)
         self.team_logos_pos = json["team_logos"]
         self.frame_time = frame_time
+        self.width = 64
+        self.height = 32
 
     def read_json(self, filename):
         # Find and return a json file

@@ -8,9 +8,8 @@ import time
 
 
 class RotateScreenRenderer(Renderer):
-    def __init__(self, data, screen_config, config, render_surface):
+    def __init__(self, data, config, render_surface):
         super().__init__(config, render_surface)
-        self.screen_config = screen_config
         debug.log(data)
         self.data = data
 
@@ -32,6 +31,7 @@ class RotateScreenRenderer(Renderer):
                 self.last_item = self.current_item
                 self.current_item = (self.current_item + 1) % len(self.data)
                 self.start_time = time.time()
+                self.text_y_pos = 0
         else:
             self.start_time = time.time()
 
@@ -47,13 +47,13 @@ class RotateScreenRenderer(Renderer):
         color_current_item = ImageColor.getcolor('red', 'RGB')
         num_items = len(self.data)
         length = num_items * 3
-        small = length > 36
+        small = length > self._get_screen_width() * float(0.6)
 
         if small:
             length = num_items * 2
 
-        x = (self.screen_width - length) / 2
-        y = 30
+        x = (self._get_screen_width() - length) / 2
+        y = self._get_screen_height() - 2
         size = 0 if small else 1
 
         for i in range(0, num_items):
@@ -64,3 +64,4 @@ class RotateScreenRenderer(Renderer):
     def _get_last_part(text):
         parts = text.split()
         return parts[len(parts) - 1]
+

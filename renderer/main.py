@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PIL import Image, ImageFont, ImageDraw, ImageSequence
 from rgbmatrix import graphics
 
@@ -82,7 +84,7 @@ class MainRenderer:
 
     def __render_test_game_day(self):
         nhl_data_source = DataSourceNhl(self.data.config)
-        data = nhl_data_source.load_day_schedule("2020-01-16")
+        data = nhl_data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))
         teams = nhl_data_source.load_teams()
         game_day_renderer = GameDayRenderer(data, teams, self._get_renderer_config(), self.render_surface)
 

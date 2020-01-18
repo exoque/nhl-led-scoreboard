@@ -239,6 +239,7 @@ class DataSourceNhl(DataSource):
                     int(away_team['team']['id']),
                     int(away_team['score']),
                     int(game['status']['statusCode']),
+                    game['gameDate'],
                     convert_time(game['gameDate']).strftime("%I:%M"),
                     h_team,
                     a_team)

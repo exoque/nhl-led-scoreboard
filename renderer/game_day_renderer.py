@@ -1,3 +1,4 @@
+from datetime import datetime
 from calendar import month_abbr
 
 from PIL import Image
@@ -46,21 +47,21 @@ class GameDayRenderer(RotateScreenRenderer):
             self._render_right_text(draw, data.home_score, self.text_y_pos)
 
     def _render_graphical_version(self, data, image, draw):
-        _, month, day = parse_today(self.config.app_config)
-
+        #FIXME: handle timezone
+        game_date = datetime.fromisoformat(data.game_date.replace('Z', '+00:00'))
         debug.log(data.game_status)
 
         if self.__is_pregame(data):
-            self.__draw_status_text(draw, 'TODAY', data.game_time, 'VS')
+            self.__draw_status_text(draw, self.__get_date_string(game_date), data.game_time, 'VS')
         elif self.__is_live_game(data):
-            score = '{}-{}'.format(data.away_score, data.home_score)
+            score = self.format_score(data)
             period = data.period
             time_period = data.time
 
             self.__draw_status_text(draw, period, time_period, score)
         else:
-            game_date = '{} {}'.format(month_abbr[month], day)
-            score = '{}-{}'.format(data.away_score, data.home_score)
+            game_date = self.__format_game_date(game_date)
+            score = self.format_score(data)
             period = data.period
 
             # Only show the period if the game ended in Overtime "OT" or Shootouts "SO"
@@ -72,6 +73,15 @@ class GameDayRenderer(RotateScreenRenderer):
             self.__draw_status_text(draw, game_date, time_period, score)
 
         self.__draw_team_logos(image, data.home_team_id, data.away_team_id)
+
+    def format_score(self, data):
+        return '{}-{}'.format(data.away_score, data.home_score)
+
+    def __format_game_date(self, game_date):
+        return '{} {}'.format(month_abbr[game_date.month], game_date.day)
+
+    def __get_date_string(self, game_date):
+        return "TODAY" if game_date == datetime.today() else self.__format_game_date(game_date)
 
     def __draw_team_logo(self, image, team_type, team_id):
         team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]

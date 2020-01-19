@@ -48,7 +48,8 @@ class GameDayRenderer(RotateScreenRenderer):
 
     def _render_graphical_version(self, data, image, draw):
         #FIXME: handle timezone
-        game_date = datetime.fromisoformat(data.game_date.replace('Z', '+00:00'))
+        game_date = datetime.fromisoformat(data.game_date.replace('Z', '+00:00')).date()
+        debug.log(game_date)
         debug.log(data.game_status)
 
         if self.__is_pregame(data):
@@ -81,7 +82,7 @@ class GameDayRenderer(RotateScreenRenderer):
         return '{} {}'.format(month_abbr[game_date.month], game_date.day)
 
     def __get_date_string(self, game_date):
-        return "TODAY" if game_date == datetime.today() else self.__format_game_date(game_date)
+        return "TODAY" if game_date == datetime.today().date() else self.__format_game_date(game_date)
 
     def __draw_team_logo(self, image, team_type, team_id):
         team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]

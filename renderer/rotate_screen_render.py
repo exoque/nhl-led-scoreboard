@@ -42,6 +42,27 @@ class RotateScreenRenderer(Renderer):
     def _item_has_changed(self):
         return self.current_item != self.last_item
 
+    #FIXME: correct implementation
+    def _draw_page_indicator_scaled(self, draw):
+        color = ImageColor.getcolor('white', 'RGB')
+        color_current_item = ImageColor.getcolor('red', 'RGB')
+        num_items = len(self.data)
+        item_width = self._get_screen_width() / 64
+        length = num_items * item_width * 1.5
+        small = length > self._get_screen_width() * float(0.6)
+
+        if small:
+            length = num_items * item_width
+
+        x = (self._get_screen_width() - length) / 2
+        y = self._get_screen_height() - item_width
+
+        size = item_width - 1 if small else item_width
+
+        for i in range(0, num_items):
+            draw.rectangle([x, y, x + size, y + size], color if i != self.current_item else color_current_item)
+            x = x + (size + item_width)
+
     def _draw_page_indicator(self, draw):
         color = ImageColor.getcolor('white', 'RGB')
         color_current_item = ImageColor.getcolor('red', 'RGB')

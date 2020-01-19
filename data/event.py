@@ -7,7 +7,7 @@ class Event:
         self.team = team
 
     def __repr__(self):
-        return "Event[{}, {}, {}, {}, {}]".format(self.key, self.players, self.result, self.about, self.team)
+        return "Event[{}, {}, {}, {}, {}]".format(self.key, self.result, self.players, self.about, self.team)
 
 
 class EventPlayer:

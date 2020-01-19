@@ -37,6 +37,7 @@ class DataSourceNhl(DataSource):
 
         dates = result['dates']
         game = self._build_game(dates[0]['games'][0])
+        self._update_time()
         return game
 
     def load_day_schedule(self, date):
@@ -48,6 +49,7 @@ class DataSourceNhl(DataSource):
 
         dates = result['dates']
         games = self._build_games(dates[0]['games'])
+        self._update_time()
         return games
 
     def load_game_stats(self, key):
@@ -66,6 +68,7 @@ class DataSourceNhl(DataSource):
             goals.append(self._build_goal(all_plays[scoring_play]))
 
         debug.log(goals)
+        self._update_time()
         return goals
 
     def load_game_stats_update(self, key, time_stamp):
@@ -84,7 +87,7 @@ class DataSourceNhl(DataSource):
 
         #for diff in result:
         time_stamp = self.parse_diff(result[0]['diff'], event_list)
-
+        self._update_time()
         return time_stamp, event_list
 
     def parse_diff(self, diff, event_list):

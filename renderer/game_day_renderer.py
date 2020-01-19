@@ -10,8 +10,8 @@ import debug
 
 
 class GameDayRenderer(RotateScreenRenderer):
-    def __init__(self, data, teams, config, render_surface):
-        super().__init__(data, config, render_surface)
+    def __init__(self, teams, config, render_surface):
+        super().__init__(config, render_surface)
         self.teams = teams
 
     def _do_render(self, image, draw, frame_time):

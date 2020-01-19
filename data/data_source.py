@@ -1,5 +1,7 @@
 import sys
 from abc import ABC, abstractmethod
+import time
+
 import requests
 import simplejson
 
@@ -10,6 +12,7 @@ class DataSource(ABC):
     def __init__(self, config):
         self.config = config
         self.url = config.url
+        self.last_update_time = None
 
     @abstractmethod
     def load_teams(self):
@@ -38,6 +41,12 @@ class DataSource(ABC):
     @abstractmethod
     def load_game_stats_update(self, key, time_stamp):
         pass
+
+    def must_update(self, current_time):
+        return True if self.last_update_time is None else current_time - self.last_update_time > 10
+
+    def _update_time(self):
+        self.last_update_time = time.time()
 
     @staticmethod
     def _execute_request(url):

@@ -8,10 +8,8 @@ import time
 
 
 class RotateScreenRenderer(Renderer):
-    def __init__(self, data, config, render_surface):
+    def __init__(self, config, render_surface):
         super().__init__(config, render_surface)
-        debug.log(data)
-        self.data = data
 
         self.display_time = 5
         self.start_time = None

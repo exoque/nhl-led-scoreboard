@@ -15,10 +15,14 @@ class Renderer(ABC):
         self.text_color = (255, 255, 255)
         self.render_surface = render_surface
         self.text_y_pos = 0
+        self.data = None
 
     def render(self, image, frame_time):
         draw = ImageDraw.Draw(image)
         self._do_render(image, draw, frame_time)
+
+    def update_data(self, data):
+        self.data = data
 
     @abstractmethod
     def _do_render(self, image, draw, frame_time):

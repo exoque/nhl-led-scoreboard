@@ -21,6 +21,9 @@ class RotateScreenRenderer(Renderer):
         pass
 
     def _get_item_to_display(self):
+        if self.data is None or len(self.data) == 0:
+            return None
+
         if self.start_time is not None:
             debug.log(time.time() - self.start_time)
             self.last_item = self.current_item
@@ -62,6 +65,9 @@ class RotateScreenRenderer(Renderer):
             x = x + (size + item_width)
 
     def _draw_page_indicator(self, draw):
+        if self.data is None or len(self.data) == 0:
+            return
+
         color = ImageColor.getcolor('white', 'RGB')
         color_current_item = ImageColor.getcolor('red', 'RGB')
         num_items = len(self.data)

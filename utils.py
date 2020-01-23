@@ -129,8 +129,8 @@ def convert_time(utc_dt):
 def parse_today(config):
     today = datetime.today()
     end_of_day = datetime.strptime(config.end_of_day, "%H:%M").replace(year=today.year, month=today.month,
-                                                                            day=today.day)
+                                                                       day=today.day)
     if end_of_day > datetime.now():
         today -= timedelta(days=1)
 
-    return today.year, today.month, today.day
+    return "{}-{}-{}".format(today.year, today.month, today.day)

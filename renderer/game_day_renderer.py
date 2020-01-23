@@ -4,7 +4,7 @@ from calendar import month_abbr
 from PIL import Image
 
 from renderer.rotate_screen_render import RotateScreenRenderer
-from utils import parse_today
+from utils import parse_today, convert_time
 
 import debug
 
@@ -34,6 +34,10 @@ class GameDayRenderer(RotateScreenRenderer):
         self._refresh_screen(image)
 
     def _render_text_version(self, data, draw):
+        if self.__is_off_day(data):
+            self._render_center_text(draw, "No Game today", self._get_screen_height() / 2)
+            return
+
         if data.game_status < 7:
             time_text = "{} {}".format(data.time, data.period) if data.time is not None else data.game_time
         else:
@@ -47,8 +51,13 @@ class GameDayRenderer(RotateScreenRenderer):
             self._render_right_text(draw, data.home_score, self.text_y_pos)
 
     def _render_graphical_version(self, data, image, draw):
-        #FIXME: handle timezone
-        game_date = datetime.fromisoformat(data.game_date.replace('Z', '+00:00')).date()
+
+        if self.__is_off_day(data):
+            self.__draw_team_logo(image, 'away', self.config.app_config.fav_team_id)
+            self._render_text(draw, 'NO GAME\nTODAY', 28, 8)
+            return
+
+        game_date = convert_time(data.game_date)
         debug.log(game_date)
         debug.log(data.game_status)
 
@@ -75,10 +84,12 @@ class GameDayRenderer(RotateScreenRenderer):
 
         self.__draw_team_logos(image, data.home_team_id, data.away_team_id)
 
-    def format_score(self, data):
+    @staticmethod
+    def format_score(data):
         return '{}-{}'.format(data.away_score, data.home_score)
 
-    def __format_game_date(self, game_date):
+    @staticmethod
+    def __format_game_date(game_date):
         return '{} {}'.format(month_abbr[game_date.month], game_date.day)
 
     def __get_date_string(self, game_date):
@@ -106,4 +117,8 @@ class GameDayRenderer(RotateScreenRenderer):
     @staticmethod
     def __is_live_game(data):
         return data.game_status == 3 or data.game_status == 4
+
+    @staticmethod
+    def __is_off_day(data):
+        return data is None or len(data) == 0
 

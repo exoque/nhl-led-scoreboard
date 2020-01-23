@@ -11,7 +11,7 @@ from renderer.scrolling_text_renderer import ScrollingTextRenderer
 from renderer.screen_config import ScreenConfig
 from renderer.animation_renderer import AnimationRenderer
 import time
-import debug
+import logging
 from utils import convert_time, parse_today
 
 
@@ -35,17 +35,17 @@ class MainRenderer:
 
     def render(self):
         data_source = DataSourceNhl(self.data.config)
-        self.renderers.append(self.__init_game_day_renderer(data_source))
-        #self.renderers.append(self.__init_game_renderer())
+        #self.renderers.append(self.__init_game_day_renderer(data_source))
+        self.renderers.append(self.__init_game_renderer())
 
         while True:
             self.frame_time = time.time()
             self.init_image()
 
             if data_source.must_update(self.frame_time):
-                data = data_source.load_day_schedule(parse_today(self.data.config))
+                #data = data_source.load_day_schedule(parse_today(self.data.config))
                 #data = data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))
-                #data = data_source.load_game_stats_update(2019020743, '20200118_183400')
+                data = data_source.load_game_stats_update(2019020743, '20200118_183400')
 
             for renderer in self.renderers:
                 renderer.update_data(data)
@@ -128,7 +128,7 @@ class MainRenderer:
             time.sleep(1)
 
     def __draw_goal(self):
-        debug.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
+        logging.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
         self.animation_renderer.render("Assets/goal_light_animation.gif")
 
     def __draw_off_day(self):

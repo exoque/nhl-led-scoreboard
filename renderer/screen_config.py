@@ -2,7 +2,7 @@ from utils import get_file
 import json
 import os
 import sys
-import debug
+import logging
 
 
 class ScreenConfig:

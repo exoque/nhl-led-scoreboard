@@ -7,7 +7,7 @@ from utils import args, led_matrix_options
 from data.data import Data
 from renderer.matrix_render_surface import MatrixRenderSurface
 from renderer.image_render_surface import ImageRenderSurface
-import debug
+import logging
 
 
 from data.data_source_nhl import DataSourceNhl
@@ -22,11 +22,11 @@ args = args()
 matrixOptions = led_matrix_options(args)
 
 # Print some basic info on startup
-debug.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))
+logging.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))
 
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)
-debug.set_debug_status(config)
+logging.basicConfig(filename='nhl-led-scoreboard.log', level=logging.DEBUG)
 
 nhl_data_source = DataSourceNhl(config)
 #print(nhl_data_source.load_teams())

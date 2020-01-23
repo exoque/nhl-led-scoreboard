@@ -1,6 +1,6 @@
 import requests
 import datetime
-import debug
+import logging
 from data.goal import Goal
 from utils import convert_time
 
@@ -169,7 +169,7 @@ def fetch_fav_team_schedule(team_id, current_date):
     """ Function to get the summary of a scheduled game. """
     # Set URL depending on team selected
     url = '{0}schedule?teamId={1}&date={2}'.format(NHL_API_URL, team_id, current_date)
-    debug.info(url)
+    logging.info(url)
     try:
         game_data = requests.get(url)
         game_data = game_data.json()

@@ -3,7 +3,7 @@ from abc import abstractmethod
 from PIL import ImageColor
 
 from renderer.renderer import Renderer
-import debug
+import logging
 import time
 
 
@@ -25,7 +25,7 @@ class RotateScreenRenderer(Renderer):
             return None
 
         if self.start_time is not None:
-            debug.log(time.time() - self.start_time)
+            logging.debug(time.time() - self.start_time)
             self.last_item = self.current_item
 
             if self.display_time <= time.time() - self.start_time:
@@ -36,8 +36,8 @@ class RotateScreenRenderer(Renderer):
         else:
             self.start_time = time.time()
 
-        debug.log(self.current_item)
-        debug.log("last item: {}".format(self.last_item))
+        logging.debug(self.current_item)
+        logging.debug("last item: {}".format(self.last_item))
         return self.data[self.current_item]
 
     def _item_has_changed(self):

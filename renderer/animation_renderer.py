@@ -1,6 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw, ImageSequence
 import time
-import debug
+import logging
 
 
 class AnimationRenderer:
@@ -12,7 +12,7 @@ class AnimationRenderer:
         frame_duration = image.info['duration'] / float(1000)
 
         for frame in ImageSequence.Iterator(image):
-            debug.info("rendering frame, frame time {}, duration {}.".format(image.info['duration'], frame_duration))
+            logging.info("rendering frame, frame time {}, duration {}.".format(image.info['duration'], frame_duration))
             self.render_surface.render(frame.convert("RGB"))
             time.sleep(frame_duration)
         image.close()

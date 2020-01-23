@@ -6,7 +6,7 @@ from PIL import Image
 from renderer.rotate_screen_render import RotateScreenRenderer
 from utils import parse_today, convert_time
 
-import debug
+import logging
 
 
 class GameDayRenderer(RotateScreenRenderer):
@@ -15,14 +15,14 @@ class GameDayRenderer(RotateScreenRenderer):
         self.teams = teams
 
     def _do_render(self, image, draw, frame_time):
-        debug.log(self.current_item)
+        logging.debug(self.current_item)
 
         data = self._get_item_to_display()
 
         if not self._item_has_changed():
             return
         else:
-            debug.log('rendering')
+            logging.debug('rendering')
 
         if False:
             self._render_text_version(data, draw)
@@ -58,8 +58,8 @@ class GameDayRenderer(RotateScreenRenderer):
             return
 
         game_date = convert_time(data.game_date)
-        debug.log(game_date)
-        debug.log(data.game_status)
+        logging.debug(game_date)
+        logging.debug(data.game_status)
 
         if self.__is_pregame(data):
             self.__draw_status_text(draw, self.__get_date_string(game_date), data.game_time, 'VS')

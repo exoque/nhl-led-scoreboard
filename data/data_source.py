@@ -5,7 +5,7 @@ import time
 import requests
 import simplejson
 
-import debug
+import logging
 
 
 class DataSource(ABC):
@@ -43,7 +43,7 @@ class DataSource(ABC):
         pass
 
     def must_update(self, current_time):
-        return True if self.last_update_time is None else current_time - self.last_update_time > 10
+        return True if self.last_update_time is None else current_time - self.last_update_time > 60
 
     def _update_time(self):
         self.last_update_time = time.time()
@@ -51,10 +51,10 @@ class DataSource(ABC):
     @staticmethod
     def _execute_request(url):
         try:
-            debug.log(url)
+            logging.debug(url)
             response = requests.get(url)
             data = response.json()
-            debug.log(data)
+            logging.debug(data)
             return data
         except requests.exceptions.RequestException:
             print("Error encountered getting teams info, Can't reach the NHL API.")

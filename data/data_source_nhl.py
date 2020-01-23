@@ -8,7 +8,7 @@ from data.goal import Goal
 from data.team import Team
 from data.game import Game, GameTeam, GameTeamLeagueRecord, GameTeamShootoutInfo, GameTeamStats
 from utils import convert_time
-import debug
+import logging
 
 
 class DataSourceNhl(DataSource):
@@ -60,14 +60,14 @@ class DataSourceNhl(DataSource):
         all_plays = plays['allPlays']
         scoring_plays = plays['scoringPlays']
         current_play = plays['currentPlay']
-        debug.log(current_play)
+        logging.debug(current_play)
 
         goals = []
 
         for scoring_play in scoring_plays:
             goals.append(self._build_goal(all_plays[scoring_play]))
 
-        debug.log(goals)
+        logging.debug(goals)
         self._update_time()
         return goals
 
@@ -78,7 +78,7 @@ class DataSourceNhl(DataSource):
 
         if 'gamePk' in result:
             meta_data = result['metaData']
-            debug.log(meta_data)
+            logging.debug(meta_data)
             time_stamp = meta_data['timeStamp']
             time.sleep(1)
             return self.load_game_stats_update(key, time_stamp)
@@ -92,7 +92,7 @@ class DataSourceNhl(DataSource):
 
     def parse_diff(self, diff, event_list):
         time_stamp = [res['value'] for res in diff if res['path'] == '/metaData/timeStamp'][0]
-        debug.log(time_stamp)
+        logging.debug(time_stamp)
         goal_list = [re.findall(r'\d+', res['path']) for res in diff
                      if ('value' in res
                          and res['path'].startswith('/liveData/plays/allPlays/')
@@ -179,7 +179,7 @@ class DataSourceNhl(DataSource):
                     e.players = p_l
 
             event_list.append(e)
-        for e in event_list: debug.log(e)
+        for e in event_list: logging.debug(e)
         return time_stamp
 
     def __parse_player(self, e, item, index):
@@ -212,7 +212,7 @@ class DataSourceNhl(DataSource):
 
     @staticmethod
     def _build_goal(event):
-        debug.log(event)
+        logging.debug(event)
         players = event['players']
         time = event['about']['periodTime']
         team = event['team']['id']

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-import debug
+import logging
 #import data.nhl_api_parser_mock as nhlparser
 import data.nhl_api_parser as nhlparser
 
@@ -47,7 +47,7 @@ class Data:
 
     def get_current_date(self):
         self.year, self.month, self.day = self.__parse_today()
-        debug.info("{}-{}-{}".format(self.year, self.month, self.day))
+        logging.info("{}-{}-{}".format(self.year, self.month, self.day))
 
     def refresh_overview(self):
         self.overview = nhlparser.fetch_overview(self.fav_team_id)

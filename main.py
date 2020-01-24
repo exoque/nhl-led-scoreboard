@@ -21,12 +21,14 @@ args = args()
 # Check for led configuration arguments
 matrixOptions = led_matrix_options(args)
 
+logging.basicConfig(filename='nhl-led-scoreboard.log', level=logging.DEBUG)
+
 # Print some basic info on startup
 logging.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))
 
 # Read scoreboard options from config.json if it exists
 config = ScoreboardConfig("config", args)
-logging.basicConfig(filename='nhl-led-scoreboard.log', level=logging.DEBUG)
+
 
 nhl_data_source = DataSourceNhl(config)
 #print(nhl_data_source.load_teams())
@@ -47,11 +49,8 @@ nhl_data_source = DataSourceNhl(config)
     #time_stamp, event_list = nhl_data_source.load_game_stats_update(2019020755, time_stamp)
 #    time.sleep(10)
 
-
-
-data = Data(config)
 #matrixRenderSurface = MatrixRenderSurface(matrixOptions)
 #MainRenderer(matrixRenderSurface, data).render()
 
 imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
-MainRenderer(imageRenderSurface, data).render()
+MainRenderer(imageRenderSurface, config).render()

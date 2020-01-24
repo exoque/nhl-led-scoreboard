@@ -9,6 +9,13 @@ import logging
 
 
 class DataSource(ABC):
+    KEY_TEAMS = 'teams'
+    KEY_GAME_INFO = 'game_info'
+    KEY_GAMES = 'games'
+    KEY_GAME_STATS = 'game_stats'
+    KEY_GAME_STATS_UPDATE = 'game_stats_update'
+
+
     def __init__(self, config):
         self.config = config
         self.url = config.url
@@ -57,7 +64,7 @@ class DataSource(ABC):
             logging.debug(data)
             return data
         except requests.exceptions.RequestException:
-            print("Error encountered getting teams info, Can't reach the NHL API.")
+            logging.error("Error encountered getting teams info, Can't reach the NHL API.")
         except simplejson.errors.JSONDecodeError:
-            print("Error parsing JSON.")
+            logging.error("Error parsing JSON.")
             sys.exit(1)

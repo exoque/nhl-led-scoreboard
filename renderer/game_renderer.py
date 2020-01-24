@@ -1,5 +1,6 @@
 import time
 
+from data.data_source import DataSource
 from renderer.renderer import Renderer
 from renderer.scrolling_text_renderer import ScrollingTextRenderer
 
@@ -11,7 +12,7 @@ class GameRenderer(Renderer):
         self.current_item = -1
 
     def _do_render(self, image, draw, frame_time):
-        event_list = self.data[1]
+        event_list = self.data[DataSource.KEY_GAME_STATS_UPDATE][1]
 
         if len(event_list) == 0 or self.is_finished():
             return

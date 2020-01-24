@@ -13,6 +13,9 @@ import logging
 
 class DataSourceNhl(DataSource):
 
+    def __init__(self, config):
+        super().__init__(config)
+
     def load_teams(self):
         url = '{0}teams'.format(self.url)
         result = self._execute_request(url)
@@ -26,31 +29,31 @@ class DataSourceNhl(DataSource):
                         entry['conference']['name'],
                         entry['division']['name'])
             teams[entry['id']] = team
-        return teams
+        return self.KEY_TEAMS, teams
 
     def load_game_info(self, key):
         url = '{0}schedule?expand=schedule.linescore&teamId={1}'.format(self.url, key)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:
-            return None
+            return self.KEY_GAME_INFO, None
 
         dates = result['dates']
         game = self._build_game(dates[0]['games'][0])
         self._update_time()
-        return game
+        return self.KEY_GAME_INFO, game
 
     def load_day_schedule(self, date):
         url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.url, date)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:
-            return None
+            return self.KEY_GAMES, None
 
         dates = result['dates']
         games = self._build_games(dates[0]['games'])
         self._update_time()
-        return games
+        return self.KEY_GAMES, games
 
     def load_game_stats(self, key):
         url = '{0}game/{1}/feed/live'.format(self.url, key)
@@ -69,7 +72,7 @@ class DataSourceNhl(DataSource):
 
         logging.debug(goals)
         self._update_time()
-        return goals
+        return self.KEY_GAME_STATS, goals
 
     def load_game_stats_update(self, key, time_stamp):
         url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.url, key, time_stamp)
@@ -83,12 +86,12 @@ class DataSourceNhl(DataSource):
             time.sleep(1)
             return self.load_game_stats_update(key, time_stamp)
         elif len(result) == 0:
-            return time_stamp, event_list
+            return self.KEY_GAME_STATS_UPDATE, (time_stamp, event_list)
 
         #for diff in result:
         time_stamp = self.parse_diff(result[0]['diff'], event_list)
         self._update_time()
-        return time_stamp, event_list
+        return self.KEY_GAME_STATS_UPDATE, (time_stamp, event_list)
 
     def parse_diff(self, diff, event_list):
         time_stamp = [res['value'] for res in diff if res['path'] == '/metaData/timeStamp'][0]

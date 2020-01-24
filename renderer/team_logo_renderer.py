@@ -1,5 +1,4 @@
 from PIL import Image, ImageFont, ImageDraw
-import debug
 
 
 class TeamLogoRenderer:

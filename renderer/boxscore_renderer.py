@@ -1,3 +1,4 @@
+from data.data_source import DataSource
 from renderer.rotate_screen_render import RotateScreenRenderer
 
 
@@ -19,3 +20,6 @@ class BoxscoreRenderer(RotateScreenRenderer):
         self._render_left_text(draw, self._get_last_part(goal_data.assist2), self._move_to_next_line())
 
         self._refresh_screen(image)
+
+    def update_data(self, data):
+        super().update_data(data[DataSource.KEY_GAMES])

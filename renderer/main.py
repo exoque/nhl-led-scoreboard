@@ -2,6 +2,7 @@ from datetime import datetime
 
 from PIL import Image, ImageFont, ImageDraw
 
+from data.data_source import DataSource
 from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer
 from renderer.game_day_renderer import GameDayRenderer
@@ -36,8 +37,11 @@ class MainRenderer:
         self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", 8)
 
     def render(self):
-        #self.renderers.append(self.__init_game_day_renderer(data_source))
-        self.renderers.append(self.__init_game_renderer())
+        updated_data = self.data_source.load_teams()
+        self.data[updated_data[0]] = updated_data[1]
+
+        self.renderers.append(self.__init_game_day_renderer(self.data_source))
+        #self.renderers.append(self.__init_game_renderer())
 
         while True:
             self.frame_time = time.time()
@@ -46,6 +50,7 @@ class MainRenderer:
             if self.data_source.must_update(self.frame_time):
                 #data = self.data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))
                 #updated_data = self.data_source.load_day_schedule(parse_today(self.config))
+
                 updated_data = self.data_source.load_day_schedule("2020-01-11")
                 self.data[updated_data[0]] = updated_data[1]
                 updated_data = self.data_source.load_game_stats_update(2019020743, '20200118_183400')
@@ -58,11 +63,11 @@ class MainRenderer:
             time.sleep(0.05)
 
     def __init_boxscore_renderer(self, data_source):
-        teams = data_source.load_teams()
+        teams = self.data[DataSource.KEY_TEAMS]
         return BoxscoreRenderer(teams, self._get_renderer_config(), self.render_surface)
 
     def __init_game_day_renderer(self, data_source):
-        teams = data_source.load_teams()
+        teams = self.data[DataSource.KEY_TEAMS]
         return GameDayRenderer(teams, self._get_renderer_config(), self.render_surface)
 
     def __init_game_renderer(self):
@@ -78,8 +83,8 @@ class MainRenderer:
     def __render_test_boxscore(self):
         nhl_data_source = DataSourceNhl(self.config)
         # data = nhl_data_source.load_game_stats(2019020691)
-        data = nhl_data_source.load_game_stats(2019020703)
-        teams = nhl_data_source.load_teams()
+        data = nhl_data_source.load_game_stats(2019020703)[DataSource.KEY_GAME_STATS]
+        teams = self.data[DataSource.KEY_TEAMS]
         box_score_renderer = BoxscoreRenderer(teams, self._get_renderer_config(), self.render_surface)
         box_score_renderer.update_data(data)
 
@@ -97,8 +102,8 @@ class MainRenderer:
 
     def __render_test_game_day(self):
         nhl_data_source = DataSourceNhl(self.config)
-        data = nhl_data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))
-        teams = nhl_data_source.load_teams()
+        data = nhl_data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))[DataSource.KEY_GAMES]
+        teams = self.data[DataSource.KEY_TEAMS]
         game_day_renderer = GameDayRenderer(teams, self._get_renderer_config(), self.render_surface)
         game_day_renderer.update_data(data)
 

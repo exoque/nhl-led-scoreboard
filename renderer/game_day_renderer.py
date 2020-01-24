@@ -3,6 +3,7 @@ from calendar import month_abbr
 
 from PIL import Image
 
+from data.data_source import DataSource
 from renderer.rotate_screen_render import RotateScreenRenderer
 from utils import parse_today, convert_time
 
@@ -13,6 +14,9 @@ class GameDayRenderer(RotateScreenRenderer):
     def __init__(self, teams, config, render_surface):
         super().__init__(config, render_surface)
         self.teams = teams
+
+    def update_data(self, data):
+        super().update_data(data[DataSource.KEY_GAMES])
 
     def _do_render(self, image, draw, frame_time):
         logging.debug(self.current_item)
@@ -120,5 +124,5 @@ class GameDayRenderer(RotateScreenRenderer):
 
     @staticmethod
     def __is_off_day(data):
-        return data is None or len(data) == 0
+        return data is None
 

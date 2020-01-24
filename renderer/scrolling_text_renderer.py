@@ -45,7 +45,6 @@ class ScrollingTextRenderer(Renderer):
         return self.x_pos + self._get_text_length(None, self.data) + self.scroll_speed < 0
 
     def update_data(self, data):
-        self.data = data
+        super().update_data(data)
         self.x_pos = self._get_screen_width()
-
 

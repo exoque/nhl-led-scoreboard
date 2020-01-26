@@ -15,11 +15,31 @@ class DataSource(ABC):
     KEY_GAME_STATS = 'game_stats'
     KEY_GAME_STATS_UPDATE = 'game_stats_update'
 
-
     def __init__(self, config):
         self.config = config
         self.url = config.url
         self.last_update_time = None
+
+    def update_data(self, data_needed):
+        data = {}
+
+        if self.KEY_TEAMS in data_needed:
+            updated_data = self.load_teams()
+            data[updated_data[0]] = updated_data[1]
+        if self.KEY_GAMES in data_needed:
+            updated_data = self.load_day_schedule(data_needed[self.KEY_GAMES]['date'])
+            data[updated_data[0]] = updated_data[1]
+        if self.KEY_GAME_INFO in data_needed:
+            updated_data = self.load_game_info(data_needed[self.KEY_GAME_INFO]['key'])
+            data[updated_data[0]] = updated_data[1]
+        if self.KEY_GAME_STATS in data_needed:
+            updated_data = self.load_game_stats(data_needed[self.KEY_GAME_STATS]['key'])
+            data[updated_data[0]] = updated_data[1]
+        if self.KEY_GAME_STATS_UPDATE in data_needed:
+            updated_data = self.load_game_stats_update(data_needed[self.KEY_GAME_STATS_UPDATE]['key'], data_needed[self.KEY_GAME_STATS_UPDATE]['timestamp'])
+            data[updated_data[0]] = updated_data[1]
+
+        return data
 
     @abstractmethod
     def load_teams(self):

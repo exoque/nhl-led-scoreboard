@@ -100,6 +100,10 @@ class GameDayRenderer(RotateScreenRenderer):
         return "TODAY" if game_date == datetime.today().date() else self.__format_game_date(game_date)
 
     def __draw_team_logo(self, image, team_type, team_id):
+        if not str(team_id) in self.config.screen_config.team_logos_pos:
+            logging.warning("No logo configuration for team id %d found.", team_id)
+            return
+
         team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.teams[team_id].abbreviation))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
@@ -110,7 +114,7 @@ class GameDayRenderer(RotateScreenRenderer):
         self.__draw_team_logo(image, 'away', away_team_id)
 
     def __draw_status_text(self, draw, first_line, second_line, third_line):
-        self._render_center_text(draw, first_line, 1)
+        self._render_center_text(draw, first_line, 0)
         self._render_center_text(draw, second_line, self._move_to_next_line())
         self._render_center_text(draw, third_line, self._move_to_next_line()-1, self.font)
 

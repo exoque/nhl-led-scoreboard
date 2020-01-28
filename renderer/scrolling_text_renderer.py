@@ -7,17 +7,18 @@ import logging
 
 
 class ScrollingTextRenderer(Renderer):
-    def __init__(self, data, config, render_surface, scroll_speed=5):
+    def __init__(self, data, config, render_surface, scroll_speed=5, text_y_pos_init=10):
         super().__init__(config, render_surface)
         logging.debug(data)
         self.data = data
         self.scroll_speed = scroll_speed
         self.x_pos = self._get_screen_width()
         self.frame_time = None
+        self.text_y_pos_init = text_y_pos_init
 
     def _do_render(self, image, draw, frame_time):
         scroll_distance = 0
-        self._render_text(draw, self.data, self.x_pos, 10)
+        self._render_text(draw, self.data, self.x_pos, self.text_y_pos)
 
         length = self._get_text_length(None, self.data)
         if length + self.x_pos + self.scroll_speed < 0:

@@ -9,7 +9,10 @@ class ScoreboardConfig:
         # Misc config options
         self.end_of_day = json["end_of_day"]
         self.debug = json["debug"]
-        self.url = json["url"]
+        if not self.debug:
+            self.url = json["url"]
+        else:
+            self.url = json["test_url"]
 
         # config options from arguments. If the argument was passed, use it's value, else use the one from config file.
         if args.fav_team:

@@ -32,7 +32,7 @@ class DataSourceNhl(DataSource):
         return self.KEY_TEAMS, teams
 
     def load_game_info(self, key):
-        url = '{0}schedule?expand=schedule.linescore&teamId={1}'.format(self.url, key)
+        url = '{0}schedule?expand=schedule.linescore&gamePk={1}'.format(self.url, key)
         result = self._execute_request(url)
 
         if len(result['dates']) == 0:

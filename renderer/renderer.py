@@ -14,10 +14,12 @@ class Renderer(ABC):
         self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", floor(self.config.screen_config.height / 4))
         self.text_color = (255, 255, 255)
         self.render_surface = render_surface
+        self.text_y_pos_init = 0
         self.text_y_pos = 0
         self.data = None
 
     def render(self, image, frame_time):
+        self.text_y_pos = self.text_y_pos_init
         draw = ImageDraw.Draw(image)
         self._do_render(image, draw, frame_time)
 

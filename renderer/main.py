@@ -41,7 +41,8 @@ class MainRenderer:
         self.data[updated_data[0]] = updated_data[1]
 
         #self.renderers.append(self.__init_game_day_renderer())
-        self.renderers.append(self.__init_game_renderer())
+        #self.renderers.append(self.__init_game_renderer())
+        self.renderers.append(self.__init_boxscore_renderer())
 
         while True:
             self.frame_time = time.time()
@@ -50,14 +51,16 @@ class MainRenderer:
             if self.data_source.must_update(self.frame_time):
                 #data = self.data_source.load_day_schedule(datetime.today().strftime('%Y-%m-%d'))
                 #updated_data = self.data_source.load_day_schedule(parse_today(self.config))
-                data_config = {DataSource.KEY_GAMES: {}, DataSource.KEY_GAME_STATS_UPDATE: {}, DataSource.KEY_GAME_INFO: {}}
+                data_config = {DataSource.KEY_GAMES: {}, DataSource.KEY_GAME_STATS_UPDATE: {}, DataSource.KEY_GAME_INFO: {}, DataSource.KEY_GAME_STATS: {}}
                 if not self.config.debug:
                     data_config[DataSource.KEY_GAMES]['date'] = parse_today(self.config)
                     data_config[DataSource.KEY_GAME_STATS_UPDATE]['key'] = 2019020743
                     data_config[DataSource.KEY_GAME_STATS_UPDATE]['timestamp'] = '20200118_183400'
                     data_config[DataSource.KEY_GAME_INFO]['key'] = 2019020743
+                    data_config[DataSource.KEY_GAME_STATS]['key'] = 2019020703
                 else:
                     data_config[DataSource.KEY_GAMES]['date'] = '2020-01-11'
+                    data_config[DataSource.KEY_GAME_STATS]['key'] = 2019020691
                     data_config[DataSource.KEY_GAME_STATS_UPDATE]['key'] = 2019020755
                     data_config[DataSource.KEY_GAME_STATS_UPDATE]['timestamp'] = '20200119_180703'
                     data_config[DataSource.KEY_GAME_INFO]['key'] = 2019020693

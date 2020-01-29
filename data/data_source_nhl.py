@@ -221,9 +221,9 @@ class DataSourceNhl(DataSource):
         team = event['team']['id']
         kind = event['result']['secondaryType']
         strength = event['result']['strength']['code']
-        scorer = players[0]['player']['fullName']
-        assist1 = players[1]['player']['fullName']
-        assist2 = players[2]['player']['fullName']
+        scorer = DataSourceNhl._parse_player(players[0])
+        assist1 = DataSourceNhl._parse_player(players[1])
+        assist2 = DataSourceNhl._parse_player(players[2])
 
         return Goal(time, team, kind, strength, scorer, assist1, assist2, DataSourceNhl._build_result(event['about']['goals']))
 
@@ -354,7 +354,7 @@ class DataSourceNhl(DataSource):
                            player['player']['fullName'],
                            player['player']['link'],
                            player['playerType'],
-                           None)
+                           player['seasonTotal'] if 'seasonTotal' in player else None)
 
     def __init_player_if_new(self, e, index):
         if e.players is None:

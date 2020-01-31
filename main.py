@@ -50,7 +50,7 @@ nhl_data_source = DataSourceNhl(config)
 #    time.sleep(10)
 
 #matrixRenderSurface = MatrixRenderSurface(matrixOptions)
-#MainRenderer(matrixRenderSurface, data).render()
+#MainRenderer(matrixRenderSurface, config).render()
 
-imageRenderSurface = ImageRenderSurface('/home/ch/Pictures/nhl-scoreboard.png')
+imageRenderSurface = ImageRenderSurface(config.image_output_file)
 MainRenderer(imageRenderSurface, config).render()

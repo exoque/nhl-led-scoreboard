@@ -23,7 +23,6 @@ class GameRenderer(Renderer):
 
         score = self.format_score(game_info)
         period = game_info.period
-        time_period = game_info.time
 
         self.__draw_status_text(draw, period, score, "")
 

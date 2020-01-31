@@ -8,6 +8,7 @@ from renderer.boxscore_renderer import BoxscoreRenderer
 from renderer.game_day_renderer import GameDayRenderer
 from renderer.game_renderer import GameRenderer
 from renderer.renderer_config import RendererConfig
+from renderer.screen_controller import ScreenController
 from renderer.scrolling_text_renderer import ScrollingTextRenderer
 from renderer.screen_config import ScreenConfig
 from renderer.animation_renderer import AnimationRenderer
@@ -20,6 +21,7 @@ class MainRenderer:
     def __init__(self, render_surface, config):
         self.render_surface = render_surface
         self.animation_renderer = AnimationRenderer(self.render_surface)
+        self.screen_controller = ScreenController(config, render_surface)
         self.config = config
         self.frame_time = time.time()
         self.screen_config = ScreenConfig("64x32_config", self.frame_time)

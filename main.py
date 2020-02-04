@@ -1,10 +1,7 @@
-import time
-from datetime import datetime, timedelta
+
 from data.scoreboard_config import ScoreboardConfig
 from renderer.main import MainRenderer
-from rgbmatrix import RGBMatrix, RGBMatrixOptions
 from utils import args, led_matrix_options
-from data.data import Data
 from renderer.matrix_render_surface import MatrixRenderSurface
 from renderer.image_render_surface import ImageRenderSurface
 import logging
@@ -49,8 +46,11 @@ nhl_data_source = DataSourceNhl(config)
     #time_stamp, event_list = nhl_data_source.load_game_stats_update(2019020755, time_stamp)
 #    time.sleep(10)
 
-#matrixRenderSurface = MatrixRenderSurface(matrixOptions)
-#MainRenderer(matrixRenderSurface, config).render()
+if config.debug_output:
+    imageRenderSurface = ImageRenderSurface(config.image_output_file)
+    MainRenderer(imageRenderSurface, config).render()
+else:
+    matrixRenderSurface = MatrixRenderSurface(matrixOptions)
+    MainRenderer(matrixRenderSurface, config).render()
 
-imageRenderSurface = ImageRenderSurface(config.image_output_file)
-MainRenderer(imageRenderSurface, config).render()
+

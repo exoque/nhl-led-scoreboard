@@ -18,7 +18,7 @@ class Data:
         self.new_day = False
 
         # get favorite team's id
-        self.fav_team_id = self.config.fav_team_id
+        self.fav_team_id = self.config.fav_team_ida[0]
 
         # Parse today's date and see if we should use today or yesterday
         self.get_current_date()

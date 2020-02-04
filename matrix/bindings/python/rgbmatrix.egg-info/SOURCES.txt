@@ -1,3 +1,4 @@
+README.md
 rgbmatrix/__init__.py
 rgbmatrix/core.cpp
 rgbmatrix/graphics.cpp

@@ -10,6 +10,7 @@ class ScoreboardConfig:
         self.end_of_day = json["end_of_day"]
         self.debug = json["debug"]
         self.image_output_file = json["image_output_file"]
+        self.debug_output = json["debug_output"]
 
         if not self.debug:
             self.url = json["url"]
@@ -18,9 +19,9 @@ class ScoreboardConfig:
 
         # config options from arguments. If the argument was passed, use it's value, else use the one from config file.
         if args.fav_team:
-            self.fav_team_id = args.fav_team
+            self.fav_team_ids = self.set_fav_teams(args.fav_team)
         else:
-            self.fav_team_id = json['fav_team_id']
+            self.fav_team_ids = self.set_fav_teams(json['fav_team_ids'])
 
     def read_json(self, filename):
         # Find and return a json file
@@ -38,3 +39,6 @@ class ScoreboardConfig:
         reference_config = self.read_json(filename)
 
         return reference_config
+
+    def set_fav_teams(self, values):
+        return values.split(",")

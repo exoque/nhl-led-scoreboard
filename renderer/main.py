@@ -21,13 +21,13 @@ class MainRenderer:
     def __init__(self, render_surface, config):
         self.render_surface = render_surface
         self.animation_renderer = AnimationRenderer(self.render_surface)
-        self.screen_controller = ScreenController(config, render_surface)
         self.config = config
         self.frame_time = time.time()
         self.screen_config = ScreenConfig("64x32_config", self.frame_time)
         self.width = self.screen_config.width
         self.height = self.screen_config.height
         self.data_source = DataSourceNhl(self.config)
+        self.screen_controller = ScreenController(config, render_surface, self.data_source)
         self.renderers = []
         self.data = {}
 
@@ -160,7 +160,7 @@ class MainRenderer:
         self.animation_renderer.render("Assets/goal_light_animation.gif")
 
     def __draw_off_day(self):
-        self.__draw_team_logo(self.image, 'away', self.config.fav_team_id)
+        self.__draw_team_logo(self.image, 'away', self.config.fav_team_ids[0])
         self.draw.multiline_text((28, 8), 'NO GAME\nTODAY', fill=(255, 255, 255), font=self.font_mini, align="center")
         self.render_surface.render(self.image)
 

@@ -57,7 +57,7 @@ class GameDayRenderer(RotateScreenRenderer):
     def _render_graphical_version(self, data, image, draw):
 
         if self.__is_off_day(data):
-            self.__draw_team_logo(image, 'away', self.config.app_config.fav_team_id)
+            self.__draw_team_logo(image, 'away', self.config.app_config.fav_team_id[0])
             self._render_text(draw, 'NO GAME\nTODAY', 28, 8)
             return
 

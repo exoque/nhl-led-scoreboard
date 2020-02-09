@@ -17,7 +17,7 @@ class GameRenderer(Renderer):
 
     def _do_render(self, image, draw, frame_time):
 
-        game_info = self.data[DataSource.KEY_GAME_INFO]
+        game_info = self.data.game
 
         self.__draw_team_logos(image, game_info.home_team_id, game_info.away_team_id)
 
@@ -25,6 +25,11 @@ class GameRenderer(Renderer):
         period = game_info.period
 
         self.__draw_status_text(draw, period, score, "")
+
+        self._refresh_screen(image)
+        return
+
+
 
         event_list = self.data[DataSource.KEY_GAME_STATS_UPDATE][1]
 

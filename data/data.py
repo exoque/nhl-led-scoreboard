@@ -1,66 +1,51 @@
-from datetime import datetime, timedelta
-import logging
-#import data.nhl_api_parser_mock as nhlparser
-import data.nhl_api_parser as nhlparser
+from data.game import GameStateChange
 
 
 class Data:
-    def __init__(self, config):
+    def __init__(self):
+        self.games = {}
+        self.current_item = 0
+        self.last_item = -1
 
-        self.idex = 0
-        # Save the parsed config
-        self.config = config
+    def add_game(self, game, events):
+        self.games[game.key] = DataGame(game, events)
 
-        # Flag to determine when to refresh data
-        self.needs_refresh = True
+    def update_game(self, key, game, events):
+        if key not in self.games:
+            self.add_game(game, events)
 
-        # Flag to determine when it's a new day
-        self.new_day = False
+        data_game = self.games[key]
+        data_game.update_game(game)
+        data_game.update_events(events)
+        return data_game.game_change
 
-        # get favorite team's id
-        self.fav_team_id = self.config.fav_team_ida[0]
+    def get_next_item_to_display(self):
+        if self.games is None or len(self.games) == 0:
+            return None
 
-        # Parse today's date and see if we should use today or yesterday
-        self.get_current_date()
+        if self.last_item != -1:
+            self.current_item = (self.current_item + 1) % len(self.games)
 
-        # Fetch the teams info
-        self.get_teams_info = nhlparser.get_teams()
+        self.last_item = self.current_item
 
-        # Fetch the games for today
-        self.refresh_games = nhlparser.fetch_games()
+        return self.games[list(self.games.keys())[self.current_item]]
 
-        # Look if favorite team play today
-        self.refresh_fav_team_status()
-
+    def _item_has_changed(self):
+        return self.current_item != self.last_item
 
 
-    def __parse_today(self):
-        today = datetime.today()
-        end_of_day = datetime.strptime(self.config.end_of_day, "%H:%M").replace(year=today.year, month=today.month, day=today.day)
-        if end_of_day > datetime.now():
-            today -= timedelta(days=1)
+class DataGame:
+    def __init__(self, game, events):
+        self.game = game
+        self.events = events
+        self.game_change = GameStateChange.NONE
 
-        return today.year, today.month, today.day
+    def update_game(self, game):
+        game_state_change = self.game.update(game)
+        self.game_change = game_state_change
+        return game_state_change
 
-    def set_date(self):
-        return datetime(self.year, self.month, self.day)
+    def update_events(self, events):
+        for key, value in events.items():
+            self.events[key] = value
 
-    def get_current_date(self):
-        self.year, self.month, self.day = self.__parse_today()
-        logging.info("{}-{}-{}".format(self.year, self.month, self.day))
-
-    def refresh_overview(self):
-        self.overview = nhlparser.fetch_overview(self.fav_team_id)
-        self.needs_refresh = False
-
-    def get_schedule(self):
-        self.schedule = nhlparser.fetch_fav_team_schedule(self.fav_team_id, self.get_date())
-
-    def refresh_fav_team_status(self):
-        self.fav_team_game_today = nhlparser.check_if_game(self.fav_team_id, self.get_date())
-
-    def get_date(self):
-        return "{}-{}-{}".format(self.year, self.month, self.day)
-
-    def check_fav_team_next_game(self):
-        pass

@@ -1,4 +1,19 @@
+from enum import IntFlag, unique
+
+
+@unique
+class GameStateChange(IntFlag):
+    NONE = 1,
+    GAME_START = 2,
+    GAME_END = 4,
+    PERIOD_START = 8,
+    PERIOD_END = 16,
+    HOME_TEAM_SCORED = 32,
+    AWAY_TEAM_SCORED = 64
+
+
 class Game:
+
     def __init__(self, key, period, time, home_team_id, home_score, away_team_id, away_score, game_status, game_date, game_time, home_team, away_team):
         self.key = key
         self.period = period
@@ -13,6 +28,37 @@ class Game:
 
         self.home_team = home_team
         self.away_team = away_team
+
+        self.game_state = GameStateChange.NONE
+
+    def update(self, game):
+        game_state = GameStateChange.NONE
+
+        if self.game_status != game.game_status:
+            self.game_status = game.game_status
+
+            # Get the correct values
+            if self.game_status == 1:
+                game_state = game_state | GameStateChange.GAME_START
+            elif self.game_status == 2:
+                game_state = game_state | GameStateChange.PERIOD_END
+            elif self.game_status == 3:
+                game_state = game_state | GameStateChange.PERIOD_START
+            elif self.game_status == 4:
+                game_state = game_state | GameStateChange.GAME_END
+
+        # score changed
+        if self.home_score != game.home_score:
+            self.home_score = game.home_score
+            game_state = game_state | GameStateChange.HOME_TEAM_SCORED
+
+        if self.away_score != game.away_score:
+            self.away_score = game.away_score
+            game_state = game_state | GameStateChange.AWAY_TEAM_SCORED
+
+        self.game_state = game_state
+
+        return game_state
 
     def __repr__(self):
         return "Game[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]".format(self.key, self.period, self.time, self.home_team_id, self.home_score, self.away_team_id, self.away_score, self.game_status, self.game_date, self.game_time, self.home_team, self.away_team)

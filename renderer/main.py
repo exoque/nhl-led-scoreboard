@@ -2,6 +2,7 @@ from datetime import datetime
 
 from PIL import Image, ImageFont, ImageDraw
 
+from data.data import Data
 from data.data_source import DataSource
 from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer
@@ -27,8 +28,8 @@ class MainRenderer:
         self.width = self.screen_config.width
         self.height = self.screen_config.height
         self.data_source = DataSourceNhl(self.config)
-        self.screen_controller = ScreenController(config, render_surface, self.data_source)
         self.renderers = []
+        self.screen_controller = ScreenController(config, render_surface, self.data_source, Data(), self.renderers)
         self.data = {}
 
         self.image = None
@@ -39,6 +40,12 @@ class MainRenderer:
         self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", 8)
 
     def render(self):
+        updated_data = self.data_source.load_teams()
+        self.data[updated_data[0]] = updated_data[1]
+        self.renderers.append(self.__init_game_renderer())
+        self.screen_controller.run()
+        return
+
         updated_data = self.data_source.load_teams()
         self.data[updated_data[0]] = updated_data[1]
 

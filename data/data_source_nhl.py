@@ -77,7 +77,7 @@ class DataSourceNhl(DataSource):
     def load_game_stats_update(self, key, time_stamp):
         url = '{0}game/{1}/feed/live/diffPatch?site=en_nhl&startTimecode={2}'.format(self.url, key, time_stamp)
         result = self._execute_request(url)
-        event_list = []
+        event_list = {}
 
         if 'gamePk' in result:
             meta_data = result['metaData']
@@ -181,7 +181,7 @@ class DataSourceNhl(DataSource):
                         p_l.append(DataSourceNhl._parse_player(i))
                     e.players = p_l
 
-            event_list.append(e)
+            event_list[entry_key] = e
         for e in event_list: logging.debug(e)
         return time_stamp
 

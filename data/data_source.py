@@ -26,16 +26,16 @@ class DataSource(ABC):
         if self.KEY_TEAMS in data_needed:
             updated_data = self.load_teams()
             self.data[updated_data[0]] = updated_data[1]
-        if self.KEY_GAMES in data_needed:
+        if self.KEY_GAMES in data_needed and len(data_needed[self.KEY_GAMES]) > 0:
             updated_data = self.load_day_schedule(data_needed[self.KEY_GAMES]['date'])
             self.data[updated_data[0]] = updated_data[1]
-        if self.KEY_GAME_INFO in data_needed:
+        if self.KEY_GAME_INFO in data_needed and len(data_needed[self.KEY_GAME_INFO]) > 0:
             updated_data = self.load_game_info(data_needed[self.KEY_GAME_INFO]['key'])
             self.data[updated_data[0]] = updated_data[1]
-        if self.KEY_GAME_STATS in data_needed:
+        if self.KEY_GAME_STATS in data_needed and len(data_needed[self.KEY_GAME_STATS]) > 0:
             updated_data = self.load_game_stats(data_needed[self.KEY_GAME_STATS]['key'])
             self.data[updated_data[0]] = updated_data[1]
-        if self.KEY_GAME_STATS_UPDATE in data_needed:
+        if self.KEY_GAME_STATS_UPDATE in data_needed and len(data_needed[self.KEY_GAME_STATS_UPDATE]) > 1:
             updated_data = self.load_game_stats_update(data_needed[self.KEY_GAME_STATS_UPDATE]['key'], data_needed[self.KEY_GAME_STATS_UPDATE]['timestamp'])
             self.data[updated_data[0]] = updated_data[1]
 

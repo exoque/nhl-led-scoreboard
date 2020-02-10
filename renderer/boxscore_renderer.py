@@ -3,6 +3,8 @@ from renderer.rotate_screen_render import RotateScreenRenderer
 
 
 class BoxscoreRenderer(RotateScreenRenderer):
+    KEY_BOXSCORE_RENDERER = 'boxscore_renderer'
+
     def __init__(self, teams, config, render_surface):
         super().__init__(config, render_surface)
         self.teams = teams
@@ -22,7 +24,7 @@ class BoxscoreRenderer(RotateScreenRenderer):
         self._refresh_screen(image)
 
     def update_data(self, data):
-        super().update_data(data[DataSource.KEY_GAME_STATS])
+        super().update_data(data.events)
 
     def _build_player_text(self, player):
         return "{} ({})".format(self._get_last_part(player.full_name), player.season_total)

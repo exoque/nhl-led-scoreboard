@@ -21,14 +21,14 @@ from utils import convert_time, parse_today
 class MainRenderer:
     def __init__(self, render_surface, config):
         self.render_surface = render_surface
-        self.animation_renderer = AnimationRenderer(self.render_surface)
+
         self.config = config
         self.frame_time = time.time()
         self.screen_config = ScreenConfig("64x32_config", self.frame_time)
         self.width = self.screen_config.width
         self.height = self.screen_config.height
         self.data_source = DataSourceNhl(self.config)
-        self.renderers = []
+        self.renderers = {}
         self.screen_controller = ScreenController(config, render_surface, self.data_source, Data(), self.renderers)
         self.data = {}
 
@@ -39,10 +39,14 @@ class MainRenderer:
         self.font = ImageFont.truetype("fonts/score_large.otf", 16)
         self.font_mini = ImageFont.truetype("fonts/04B_24__.TTF", 8)
 
+        self.animation_renderer = AnimationRenderer(self._get_renderer_config(), self.render_surface, "Assets/goal_light_animation.gif")
+
     def render(self):
         updated_data = self.data_source.load_teams()
         self.data[updated_data[0]] = updated_data[1]
-        self.renderers.append(self.__init_game_renderer())
+        self.renderers[GameRenderer.KEY_GAME_RENDERER] = (self.__init_game_renderer())
+        self.renderers[BoxscoreRenderer.KEY_BOXSCORE_RENDERER] = (self.__init_boxscore_renderer())
+        self.renderers[AnimationRenderer.KEY_ANIMATION_RENDERER] = (self.__init_animation_renderer())
         self.screen_controller.run()
         return
 
@@ -102,6 +106,9 @@ class MainRenderer:
     def __init_scrolling_text_renderer(self):
         return ScrollingTextRenderer("This is a really long text which doesn't fit on the screen so it has to be scrolled.",
                               self._get_renderer_config(), self.render_surface)
+
+    def __init_animation_renderer(self):
+        return AnimationRenderer(self._get_renderer_config(), self.render_surface, "Assets/goal_light_animation.gif")
 
     def _get_renderer_config(self):
         return RendererConfig(self.screen_config, self.config)
@@ -164,7 +171,7 @@ class MainRenderer:
 
     def __draw_goal(self):
         logging.info('SCOOOOOOOORE, MAY DAY, MAY DAY, MAY DAY, MAY DAAAAAAAAY - Rick Jeanneret')
-        self.animation_renderer.render("Assets/goal_light_animation.gif")
+        self.animation_renderer.render(self.image, self.frame_time)
 
     def __draw_off_day(self):
         self.__draw_team_logo(self.image, 'away', self.config.fav_team_ids[0])

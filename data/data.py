@@ -19,6 +19,9 @@ class Data:
         data_game.update_events(events)
         return data_game.game_change
 
+    def update_events(self, key, events):
+        self.games[key].events = events
+
     def get_next_item_to_display(self):
         if self.games is None or len(self.games) == 0:
             return None

@@ -181,7 +181,7 @@ class DataSourceNhl(DataSource):
                         p_l.append(DataSourceNhl._parse_player(i))
                     e.players = p_l
 
-            event_list[entry_key] = e
+            event_list[entry_key[0]] = e
         for e in event_list: logging.debug(e)
         return time_stamp
 

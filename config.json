@@ -1,9 +1,9 @@
 {
     "end_of_day": "14:00",
-    "debug": false,
+    "debug": true,
     "fav_team_ids": "",
     "url": "http://statsapi.web.nhl.com/api/v1/",
-    "debug_url": "http://localhost:8080/api/v1/",
+    "debug_url": "http://localhost:8080/",
     "image_output_file": "/home/ch/Pictures/nhl-scoreboard.png",
     "debug_output": true
 

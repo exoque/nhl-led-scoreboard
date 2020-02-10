@@ -9,7 +9,8 @@ class GameStateChange(IntFlag):
     PERIOD_START = 8,
     PERIOD_END = 16,
     HOME_TEAM_SCORED = 32,
-    AWAY_TEAM_SCORED = 64
+    AWAY_TEAM_SCORED = 64,
+    SCORE_CHANGED = 96
 
 
 class Game:
@@ -48,11 +49,11 @@ class Game:
                 game_state = game_state | GameStateChange.GAME_END
 
         # score changed
-        if self.home_score != game.home_score:
+        if self.home_score < game.home_score:
             self.home_score = game.home_score
             game_state = game_state | GameStateChange.HOME_TEAM_SCORED
 
-        if self.away_score != game.away_score:
+        if self.away_score < game.away_score:
             self.away_score = game.away_score
             game_state = game_state | GameStateChange.AWAY_TEAM_SCORED
 

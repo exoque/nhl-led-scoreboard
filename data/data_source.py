@@ -70,7 +70,7 @@ class DataSource(ABC):
         pass
 
     def must_update(self, current_time):
-        return True if self.last_update_time is None else current_time - self.last_update_time > 60
+        return True if self.last_update_time is None else current_time - self.last_update_time > 10
 
     def _update_time(self):
         self.last_update_time = time.time()

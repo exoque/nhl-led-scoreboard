@@ -2,17 +2,22 @@ from PIL import Image, ImageFont, ImageDraw, ImageSequence
 import time
 import logging
 
+from renderer.renderer import Renderer
 
-class AnimationRenderer:
-    def __init__(self, render_surface):
-        self.render_surface = render_surface
 
-    def render(self, image_path):
-        image = Image.open(image_path)
-        frame_duration = image.info['duration'] / float(1000)
+class AnimationRenderer(Renderer):
+    KEY_ANIMATION_RENDERER = 'animation_renderer'
 
-        for frame in ImageSequence.Iterator(image):
-            logging.info("rendering frame, frame time {}, duration {}.".format(image.info['duration'], frame_duration))
+    def __init__(self, config, render_surface, image_path):
+        super().__init__(config, render_surface)
+        self.image_path = image_path
+
+    def _do_render(self, image, draw, frame_time):
+        animation = Image.open(self.image_path)
+        frame_duration = animation.info['duration'] / float(1000)
+
+        for frame in ImageSequence.Iterator(animation):
+            logging.info("rendering frame, frame time {}, duration {}.".format(animation.info['duration'], frame_duration))
             self.render_surface.render(frame.convert("RGB"))
             time.sleep(frame_duration)
-        image.close()
+        animation.close()

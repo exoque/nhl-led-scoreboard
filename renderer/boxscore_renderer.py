@@ -27,4 +27,4 @@ class BoxscoreRenderer(RotateScreenRenderer):
         super().update_data(data.events)
 
     def _build_player_text(self, player):
-        return "{} ({})".format(self._get_last_part(player.full_name), player.season_total)
+        return "" if player is None else "{} ({})".format(self._get_last_part(player.full_name), player.season_total)

@@ -20,4 +20,3 @@ class AnimationRenderer(Renderer):
             logging.info("rendering frame, frame time {}, duration {}.".format(animation.info['duration'], frame_duration))
             self.render_surface.render(frame.convert("RGB"))
             time.sleep(frame_duration)
-        animation.close()

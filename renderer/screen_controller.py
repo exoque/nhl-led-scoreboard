@@ -10,6 +10,8 @@ from renderer.game_renderer import GameRenderer
 from renderer.screen_config import ScreenConfig
 from utils import parse_today
 
+import logging
+
 from enum import unique, Enum
 
 
@@ -38,7 +40,6 @@ class ScreenController:
         self.image = None
         self.draw = None
         self.config.data_needed = {}
-        self.api_data = {}
         self.display_time = 5
         self.start_time = None
         self.current_game = None
@@ -51,27 +52,34 @@ class ScreenController:
         self.config.data_needed[updated_data[0]] = updated_data[1]
         self.config.data_needed = {DataSource.KEY_GAMES: {}, DataSource.KEY_GAME_STATS_UPDATE: {}, DataSource.KEY_GAME_INFO: {},
                        DataSource.KEY_GAME_STATS: {}}
-        self.config.data_needed[DataSource.KEY_GAMES]['date'] = parse_today(self.config)
 
         while True:
             self.frame_time = time.time()
             self.init_image()
 
+            logging.info("Started frame with time '%d'.", self.frame_time)
+
             if self.data_source.must_update(self.frame_time):
                 self.update_data()
 
             self.render()
-            time.sleep(0.05)
+            time.sleep(self.config.sleep_time)
 
     def update_data(self):
-        self.api_data = self.data_source.update_data(self.config.data_needed)
+        today = parse_today(self.config)
+        current_date = self.config.data_needed[DataSource.KEY_GAMES]['date'] if DataSource.KEY_GAMES in self.config.data_needed and 'date' in self.config.data_needed[DataSource.KEY_GAMES] else None
+        if today != current_date:
+            self.data.reset()
+            self.config.data_needed[DataSource.KEY_GAMES]['date'] = today
 
-        for game in self.api_data[DataSource.KEY_GAMES]:
-            if 1 < game.game_status < 7 or game.key not in self.data.games:
+        api_data = self.data_source.update_data(self.config.data_needed)
+
+        for game in api_data[DataSource.KEY_GAMES]:
+            if 2 < game.game_status < 7 or game.key not in self.data.games:
                 self.config.data_needed[DataSource.KEY_GAME_INFO]['key'] = game.key
 
                 updated_data = self.data_source.load_game_info(self.config.data_needed[DataSource.KEY_GAME_INFO]['key'])
-                self.api_data[updated_data[0]] = updated_data[1]
+                api_data[updated_data[0]] = updated_data[1]
 
                 state_change = self.data.update_game(game.key, game, {})
                 if GameStateChange.HOME_TEAM_SCORED in state_change \
@@ -79,6 +87,7 @@ class ScreenController:
                         or GameStateChange.PERIOD_END in state_change \
                         or GameStateChange.GAME_END in state_change:
 
+                    logging.info("GameStateChange %d for game %s", state_change, game.key)
 #
 #
  #                   self.config.data_needed[DataSource.KEY_GAME_STATS_UPDATE]['key'] = game.key
@@ -90,8 +99,18 @@ class ScreenController:
                     self.config.data_needed[DataSource.KEY_GAME_STATS]['key'] = game.key
                     updated_data = self.data_source.load_game_stats(self.config.data_needed[DataSource.KEY_GAME_STATS]['key'])
 
+                    logging.info(updated_data)
+                    if len(updated_data) > 0:
+                        logging.info(updated_data[1])
+                        if len(updated_data[1]) > 0:
+                            logging.info(updated_data[1][0])
+                        else:
+                            continue
+                    else:
+                        continue
+
                     self.priority_game = self.data.games[game.key]
-                    self.data.update_events(game.key, [updated_data[1][1]])
+                    self.data.update_events(game.key, [updated_data[1][0]])
                     self.render_state = RenderState.Goal_Light
 
     def render(self):
@@ -100,6 +119,8 @@ class ScreenController:
         elif self.start_time is None or self.display_time <= time.time() - self.start_time:
             self.current_game = self.data.get_next_item_to_display()
             self.start_time = time.time()
+
+        logging.info("current game: %d, priority game: %d", self.current_game.game.key if self.current_game is not None else 0, self.priority_game.game.key if self.priority_game is not None else 0)
 
         if self.render_state == RenderState.Goal_Light\
                 or self.render_state == RenderState.Goal_Scorer\
@@ -119,6 +140,8 @@ class ScreenController:
         renderer.render(self.image, self.frame_time)
 
     def render_goal(self):
+
+        logging.info("Rendering goal with state %s", self.render_state)
 
         if self.render_state == RenderState.Goal_Light:
             renderer = self.renderers[AnimationRenderer.KEY_ANIMATION_RENDERER]

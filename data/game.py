@@ -59,6 +59,13 @@ class Game:
 
         self.game_state = game_state
 
+        self.period = game.period
+        self.time = game.time
+        self.home_score = game.home_score
+        self.away_score = game.away_score
+        self.game_status = game.game_status
+        self.game_time = game.game_time
+
         return game_state
 
     def __repr__(self):

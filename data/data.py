@@ -36,6 +36,11 @@ class Data:
     def _item_has_changed(self):
         return self.current_item != self.last_item
 
+    def reset(self):
+        self.games = {}
+        self.current_item = 0
+        self.last_item = -1
+
 
 class DataGame:
     def __init__(self, game, events):

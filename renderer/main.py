@@ -182,7 +182,6 @@ class MainRenderer:
         team_logo_pos = self.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.config.get_teams_info[team_id]['abbreviation']))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
-        team_logo.close()
 
     def init_image(self):
         self.image = Image.new('RGB', (self.width, self.height))

@@ -70,7 +70,10 @@ class DataSource(ABC):
         pass
 
     def must_update(self, current_time):
-        return True if self.last_update_time is None else current_time - self.last_update_time > 10
+        must_update = True if self.last_update_time is None else current_time - self.last_update_time > 10
+        if must_update:
+            logging.info("Data must be updated at '%s", current_time)
+        return must_update
 
     def _update_time(self):
         self.last_update_time = time.time()
@@ -78,13 +81,20 @@ class DataSource(ABC):
     @staticmethod
     def _execute_request(url):
         try:
-            logging.debug(url)
+            logging.info(url)
             response = requests.get(url)
             data = response.json()
-            logging.debug(data)
+            logging.info(data)
             return data
-        except requests.exceptions.RequestException:
-            logging.error("Error encountered getting teams info, Can't reach the NHL API.")
-        except simplejson.errors.JSONDecodeError:
+        except requests.exceptions.RequestException as e:
+            logging.error("Error getting response, Can't reach the NHL API '%s'.", url)
+            logging.error(e)
+            return None
+        except simplejson.errors.JSONDecodeError as e:
             logging.error("Error parsing JSON.")
-            sys.exit(1)
+            logging.error(e)
+            return None
+        except Exception as e:
+            logging.error("Error getting response")
+            logging.error(e)
+            return None

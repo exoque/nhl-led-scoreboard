@@ -21,6 +21,9 @@ class DataSourceNhl(DataSource):
         result = self._execute_request(url)
         teams = {}
 
+        if 'teams' not in result:
+            return None
+
         for entry in result['teams']:
             team = Team(entry['id'],
                         entry['teamName'],
@@ -35,7 +38,7 @@ class DataSourceNhl(DataSource):
         url = '{0}schedule?expand=schedule.linescore&gamePk={1}'.format(self.url, key)
         result = self._execute_request(url)
 
-        if len(result['dates']) == 0:
+        if result is None or 'dates' not in result or len(result['dates']) == 0:
             return self.KEY_GAME_INFO, None
 
         dates = result['dates']
@@ -47,7 +50,7 @@ class DataSourceNhl(DataSource):
         url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.url, date)
         result = self._execute_request(url)
 
-        if len(result['dates']) == 0:
+        if result is None or 'dates' not in result or len(result['dates']) == 0:
             return self.KEY_GAMES, None
 
         dates = result['dates']
@@ -58,6 +61,10 @@ class DataSourceNhl(DataSource):
     def load_game_stats(self, key):
         url = '{0}game/{1}/feed/live'.format(self.url, key)
         result = self._execute_request(url)
+
+        if result is None or 'liveData' not in result or len(result['liveData']) == 0:
+            return self.KEY_GAME_STATS, None
+
         live_data = result['liveData']
         plays = live_data['plays']
         all_plays = plays['allPlays']
@@ -219,11 +226,11 @@ class DataSourceNhl(DataSource):
         players = event['players']
         time = event['about']['periodTime']
         team = event['team']['id']
-        kind = event['result']['secondaryType']
+        kind = event['result']['secondaryType'] if 'secondaryType' in event['result'] else None
         strength = event['result']['strength']['code']
-        scorer = DataSourceNhl._parse_player(players[0])
-        assist1 = DataSourceNhl._parse_player(players[1])
-        assist2 = DataSourceNhl._parse_player(players[2])
+        scorer = DataSourceNhl._parse_player(players[0]) if len(players) > 0 else None
+        assist1 = DataSourceNhl._parse_player(players[1]) if len(players) > 1 else None
+        assist2 = DataSourceNhl._parse_player(players[2]) if len(players) > 2 else None
 
         return Goal(time, team, kind, strength, scorer, assist1, assist2, DataSourceNhl._build_result(event['about']['goals']))
 

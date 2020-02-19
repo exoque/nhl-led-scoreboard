@@ -107,7 +107,6 @@ class GameDayRenderer(RotateScreenRenderer):
         team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.teams[team_id].abbreviation))
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], team_logo_pos["y"]))
-        team_logo.close()
 
     def __draw_team_logos(self, image, home_team_id, away_team_id):
         self.__draw_team_logo(image, 'home', home_team_id)

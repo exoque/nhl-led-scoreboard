@@ -14,8 +14,10 @@ class ScoreboardConfig:
 
         if not self.debug:
             self.url = json["url"]
+            self.sleep_time = 0.05
         else:
             self.url = json["debug_url"]
+            self.sleep_time = 1
 
         # config options from arguments. If the argument was passed, use it's value, else use the one from config file.
         if args.fav_team:

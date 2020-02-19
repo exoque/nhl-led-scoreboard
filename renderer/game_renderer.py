@@ -69,7 +69,6 @@ class GameRenderer(Renderer):
         team_logo = Image.open('logos/{}.png'.format(self.teams[team_id].abbreviation))
         y_pos = team_logo_pos["y"] if self.is_finished() else team_logo_pos["y"] - 6
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], y_pos))
-        team_logo.close()
 
     def __draw_team_logos(self, image, home_team_id, away_team_id):
         self.__draw_team_logo(image, 'home', home_team_id)

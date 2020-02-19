@@ -132,5 +132,5 @@ def parse_today(config):
                                                                        day=today.day)
     if end_of_day > datetime.now():
         today -= timedelta(days=1)
-    return "2020-2-9"
+    return "2020-2-16"
     #return "{}-{}-{}".format(today.year, today.month, today.day)

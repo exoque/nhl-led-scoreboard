@@ -15,6 +15,7 @@ class RotateScreenRenderer(Renderer):
         self.start_time = None
         self.current_item = 0
         self.last_item = -1
+        self.rotation_completed = False
 
     @abstractmethod
     def _do_render(self, image, draw, frame_time):
@@ -31,6 +32,7 @@ class RotateScreenRenderer(Renderer):
             if self.display_time <= time.time() - self.start_time:
                 self.last_item = self.current_item
                 self.current_item = (self.current_item + 1) % len(self.data)
+                self.rotation_completed = self.current_item == 0
                 self.start_time = time.time()
                 self.text_y_pos = 0
         else:
@@ -42,6 +44,16 @@ class RotateScreenRenderer(Renderer):
 
     def _item_has_changed(self):
         return self.current_item != self.last_item
+
+    def all_items_shown(self):
+        return self.rotation_completed
+
+    def update_data(self, data):
+        super().update_data(data)
+        self.start_time = None
+        self.current_item = 0
+        self.last_item = -1
+        self.rotation_completed = False
 
     #FIXME: correct implementation
     def _draw_page_indicator_scaled(self, draw):

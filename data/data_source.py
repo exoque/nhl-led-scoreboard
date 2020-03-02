@@ -70,9 +70,9 @@ class DataSource(ABC):
         pass
 
     def must_update(self, current_time):
-        must_update = True if self.last_update_time is None else current_time - self.last_update_time > 10
+        must_update = True if self.last_update_time is None else current_time - self.last_update_time > self.config.update_rate
         if must_update:
-            logging.info("Data must be updated at '%s", current_time)
+            logging.debug("Data must be updated at '%s", current_time)
         return must_update
 
     def _update_time(self):
@@ -81,10 +81,10 @@ class DataSource(ABC):
     @staticmethod
     def _execute_request(url):
         try:
-            logging.info(url)
+            #logging.info(url)
             response = requests.get(url)
             data = response.json()
-            logging.info(data)
+            #logging.info(data)
             return data
         except requests.exceptions.RequestException as e:
             logging.error("Error getting response, Can't reach the NHL API '%s'.", url)

@@ -21,7 +21,7 @@ class DataSourceNhl(DataSource):
         result = self._execute_request(url)
         teams = {}
 
-        if 'teams' not in result:
+        if result is None or 'teams' not in result:
             return None
 
         for entry in result['teams']:
@@ -228,11 +228,25 @@ class DataSourceNhl(DataSource):
         team = event['team']['id']
         kind = event['result']['secondaryType'] if 'secondaryType' in event['result'] else None
         strength = event['result']['strength']['code']
-        scorer = DataSourceNhl._parse_player(players[0]) if len(players) > 0 else None
-        assist1 = DataSourceNhl._parse_player(players[1]) if len(players) > 1 else None
-        assist2 = DataSourceNhl._parse_player(players[2]) if len(players) > 2 else None
+        scorer = None
+        assist1 = None
+        assist2 = None
+        goalie = None
 
-        return Goal(time, team, kind, strength, scorer, assist1, assist2, DataSourceNhl._build_result(event['about']['goals']))
+        for player in players:
+            parsed_player = DataSourceNhl._parse_player(player)
+
+            if parsed_player.player_type == 'Scorer':
+                scorer = parsed_player
+            elif parsed_player.player_type == 'Goalie':
+                goalie = parsed_player
+            elif parsed_player.player_type == 'Assist':
+                if assist1 is None:
+                    assist1 = parsed_player
+                else:
+                    assist2 = parsed_player
+
+        return Goal(time, team, kind, strength, scorer, assist1, assist2, goalie, DataSourceNhl._build_result(event['about']['goals']))
 
     @staticmethod
     def _build_result(res):

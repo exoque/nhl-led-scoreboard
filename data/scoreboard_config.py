@@ -11,6 +11,7 @@ class ScoreboardConfig:
         self.debug = json["debug"]
         self.image_output_file = json["image_output_file"]
         self.debug_output = json["debug_output"]
+        self.update_rate = json["update_rate"]
 
         if not self.debug:
             self.url = json["url"]

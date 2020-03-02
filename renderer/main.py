@@ -42,7 +42,13 @@ class MainRenderer:
         self.animation_renderer = AnimationRenderer(self._get_renderer_config(), self.render_surface, "Assets/goal_light_animation.gif")
 
     def render(self):
-        updated_data = self.data_source.load_teams()
+        while True:
+            updated_data = self.data_source.load_teams()
+            if updated_data is None:
+                time.sleep(10)
+            else:
+                break
+
         self.data[updated_data[0]] = updated_data[1]
         self.renderers[GameRenderer.KEY_GAME_RENDERER] = (self.__init_game_renderer())
         self.renderers[BoxscoreRenderer.KEY_BOXSCORE_RENDERER] = (self.__init_boxscore_renderer())

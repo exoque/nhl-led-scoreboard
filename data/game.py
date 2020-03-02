@@ -38,15 +38,20 @@ class Game:
         if self.game_status != game.game_status:
             self.game_status = game.game_status
 
+            # 3 => game started
+
             # Get the correct values
             if self.game_status == 1:
                 game_state = game_state | GameStateChange.GAME_START
-            elif self.game_status == 2:
+            elif self.game_status == 2 or (self.time != 'END' and game.time == 'END'):
                 game_state = game_state | GameStateChange.PERIOD_END
             elif self.game_status == 3:
                 game_state = game_state | GameStateChange.PERIOD_START
             elif self.game_status == 4:
                 game_state = game_state | GameStateChange.GAME_END
+
+        if self.game_status == 3 and (self.time != 'END' and game.time == 'END'):
+            game_state = game_state | GameStateChange.PERIOD_END
 
         # score changed
         if self.home_score < game.home_score:

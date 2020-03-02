@@ -1,5 +1,7 @@
 import time
 
+from queue import Queue
+
 from PIL import Image, ImageFont, ImageDraw
 
 from data.data_source import DataSource
@@ -17,13 +19,16 @@ from enum import unique, Enum
 
 @unique
 class RenderState(Enum):
+    Reset = 0,
     Game = 1,
     Goal_Light = 2,
     Goal_Scorer = 3,
     Goal_Result = 4,
     Goal_Reset = 5,
-    Period_End = 6,
-    Game_End = 7
+    Period_End_Start = 6,
+    Period_End = 7,
+    Game_End_Start = 8,
+    Game_End = 9,
 
 
 class ScreenController:
@@ -46,6 +51,7 @@ class ScreenController:
         self.priority_game = None
         self.render_state = RenderState.Game
         self.state_start_time = time.time()
+        self.event_queue = Queue()
 
     def run(self):
         updated_data = self.data_source.load_teams()
@@ -57,7 +63,7 @@ class ScreenController:
             self.frame_time = time.time()
             self.init_image()
 
-            logging.info("Started frame with time '%d'.", self.frame_time)
+            #logging.info("Started frame with time '%d'.", self.frame_time)
 
             if self.data_source.must_update(self.frame_time):
                 self.update_data()
@@ -73,6 +79,9 @@ class ScreenController:
             self.config.data_needed[DataSource.KEY_GAMES]['date'] = today
 
         api_data = self.data_source.update_data(self.config.data_needed)
+
+        if api_data[DataSource.KEY_GAMES] is None:
+            return
 
         for game in api_data[DataSource.KEY_GAMES]:
             if 2 < game.game_status < 7 or game.key not in self.data.games:
@@ -103,34 +112,68 @@ class ScreenController:
                     if len(updated_data) > 0:
                         logging.info(updated_data[1])
                         if len(updated_data[1]) > 0:
-                            logging.info(updated_data[1][0])
+                            logging.info(updated_data[1][-1])
                         else:
                             continue
                     else:
                         continue
 
-                    self.priority_game = self.data.games[game.key]
-                    self.data.update_events(game.key, [updated_data[1][0]])
-                    self.render_state = RenderState.Goal_Light
+                    #self.priority_game = self.data.games[game.key]
+                    self.data.update_events(game.key, [updated_data[1][-1]])
+                    #self.render_state = RenderState.Goal_Light
+                    if GameStateChange.HOME_TEAM_SCORED in state_change or GameStateChange.AWAY_TEAM_SCORED in state_change:
+                        self.event_queue.put((self.data.games[game.key], RenderState.Goal_Light))
+                    if GameStateChange.PERIOD_END in state_change:
+                        self.event_queue.put((self.data.games[game.key], RenderState.Period_End_Start))
+                    if GameStateChange.GAME_END in state_change:
+                        self.event_queue.put((self.data.games[game.key], RenderState.Game_End_Start))
+
+                logging.info("EVENT QUEUE: ")
+                self.queue_to_list(self.event_queue)
+
+    def queue_to_list(self, q):
+        """ Dump a Queue to a list """
+        logging.info(list(q.queue))
 
     def render(self):
-        if self.priority_game is not None:
+
+        logging.info("EVENT QUEUE IN RENDER: ")
+        logging.info("Empty: " + str(self.event_queue.empty()))
+        self.queue_to_list(self.event_queue)
+
+        if self.priority_game is not None and self.priority_game != 0:
             self.start_time = time.time()
+            logging.info("First if")
+        elif not self.event_queue.empty():
+            logging.info("second if")
+            game, state = self.event_queue.get()
+            self.priority_game = game
+            self.render_state = state
         elif self.start_time is None or self.display_time <= time.time() - self.start_time:
+            logging.info("third if")
             self.current_game = self.data.get_next_item_to_display()
             self.start_time = time.time()
+        else:
+            logging.info("Else")
 
-        logging.info("current game: %d, priority game: %d", self.current_game.game.key if self.current_game is not None else 0, self.priority_game.game.key if self.priority_game is not None else 0)
+        logging.info("Render State is: " + str(self.render_state))
+        #logging.info("current game: %d, priority game: %d", self.current_game.game.key if self.current_game is not None else 0, self.priority_game.game.key if self.priority_game is not None else 0)
 
         if self.render_state == RenderState.Goal_Light\
                 or self.render_state == RenderState.Goal_Scorer\
                 or self.render_state == RenderState.Goal_Result\
                 or self.render_state == RenderState.Goal_Reset:
             self.render_goal()
-        elif self.render_state == RenderState.Period_End:
+        elif self.render_state == RenderState.Period_End_Start\
+                or self.render_state == RenderState.Period_End:
             self.render_period_end()
         elif self.render_state == RenderState.Game_End:
             self.render_game_end()
+        elif self.render_state == RenderState.Reset:
+            self.priority_game = None
+            self.start_time = time.time()
+            self.render_state = RenderState.Game
+            self.render_game()
         else:
             self.render_game()
 
@@ -171,11 +214,29 @@ class ScreenController:
 
     def render_period_end(self):
         # Show boxscore for period
-        pass
+        logging.info("Rendering period end")
+
+        renderer = self.renderers[BoxscoreRenderer.KEY_BOXSCORE_RENDERER]
+        if self.render_state == RenderState.Period_End_Start:
+            renderer.update_data(self.priority_game)
+            self.render_state = RenderState.Period_End
+        renderer.render(self.image, self.frame_time)
+
+        if renderer.all_items_shown():
+            self.render_state = RenderState.Reset
 
     def render_game_end(self):
         # Show boxscore for game
-        pass
+        logging.info("Rendering game end")
+
+        renderer = self.renderers[BoxscoreRenderer.KEY_BOXSCORE_RENDERER]
+        if self.render_state == RenderState.Game_End_Start:
+            renderer.update_data(self.priority_game)
+            self.render_state = RenderState.Game_End
+        renderer.render(self.image, self.frame_time)
+
+        if renderer.all_items_shown():
+            self.render_state = RenderState.Reset
 
     def __should_move_to_next_state(self):
         if time.time() - self.state_start_time > 5:

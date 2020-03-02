@@ -5,6 +5,6 @@
     "url": "http://statsapi.web.nhl.com/api/v1/",
     "debug_url": "http://localhost:8080/",
     "image_output_file": "/home/ch/Pictures/nhl-scoreboard.png",
-    "debug_output": true
-
+    "debug_output": true,
+    "update_rate": 2
 }

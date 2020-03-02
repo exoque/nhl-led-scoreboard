@@ -1,3 +1,5 @@
+import logging
+
 from data.game import GameStateChange
 
 
@@ -13,14 +15,17 @@ class Data:
     def update_game(self, key, game, events):
         if key not in self.games:
             self.add_game(game, events)
-
-        data_game = self.games[key]
-        data_game.update_game(game)
-        data_game.update_events(events)
+            data_game = self.games[key]
+        else:
+            data_game = self.games[key]
+            data_game.update_game(game)
+            data_game.update_events(events)
         return data_game.game_change
 
     def update_events(self, key, events):
+        logging.info(events)
         self.games[key].events = events
+        #self.games[key].update_events(events)
 
     def get_next_item_to_display(self):
         if self.games is None or len(self.games) == 0:
@@ -54,6 +59,10 @@ class DataGame:
         return game_state_change
 
     def update_events(self, events):
-        for key, value in events.items():
-            self.events[key] = value
+        pass
+        #for key, value in events.items():
+         #   self.events[key] = value
+
+    def __repr__(self):
+        return "DataGame({}, {}, {})".format(self.game, self.game, self.events)
 

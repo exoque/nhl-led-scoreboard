@@ -96,7 +96,7 @@ class GameRenderer(Renderer):
         logging.debug(data.game_status)
 
         if self.__is_pregame(data):
-            self.__draw_status_text(draw, self.__get_date_string(game_date), data.game_time, 'VS')
+            self.__draw_status_text(draw, self.__get_date_string(game_date), self.__get_pregame_time_or_status(data.game_status, data.time), 'VS')
         elif self.__is_live_game(data):
             score = self.format_score(data)
             period = data.period
@@ -127,12 +127,25 @@ class GameRenderer(Renderer):
 
     @staticmethod
     def __is_pregame(data):
-        return data.game_status == 1 or data.game_status == 2
+        return data.game_status in {1, 2, 8, 9}
 
     @staticmethod
     def __is_live_game(data):
-        return data.game_status == 3 or data.game_status == 4
+        return data.game_status in {3, 4}
+
+    @staticmethod
+    def __is_final_game(data):
+        return data.game_status in {5, 6, 7}
 
     @staticmethod
     def __is_off_day(data):
         return data is None
+
+    @staticmethod
+    def __get_pregame_time_or_status(status, game_time):
+        if status == 8:
+            return 'TBD'
+        elif status == 9 or game_time is None:
+            return 'PPD'
+        else:
+            return game_time

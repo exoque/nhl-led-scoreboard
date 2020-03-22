@@ -167,7 +167,8 @@ class ScreenController:
         elif self.render_state == RenderState.Period_End_Start\
                 or self.render_state == RenderState.Period_End:
             self.render_period_end()
-        elif self.render_state == RenderState.Game_End:
+        elif self.render_state == RenderState.Game_End_Start\
+                or self.render_state == RenderState.Game_End:
             self.render_game_end()
         elif self.render_state == RenderState.Reset:
             self.priority_game = None

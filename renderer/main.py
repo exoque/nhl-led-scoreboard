@@ -8,6 +8,7 @@ from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer
 from renderer.game_day_renderer import GameDayRenderer
 from renderer.game_renderer import GameRenderer
+from renderer.page_indicator_renderer import PageIndicatorRenderer
 from renderer.renderer_config import RendererConfig
 from renderer.screen_controller import ScreenController
 from renderer.scrolling_text_renderer import ScrollingTextRenderer
@@ -53,6 +54,8 @@ class MainRenderer:
         self.renderers[GameRenderer.KEY_GAME_RENDERER] = (self.__init_game_renderer())
         self.renderers[BoxscoreRenderer.KEY_BOXSCORE_RENDERER] = (self.__init_boxscore_renderer())
         self.renderers[AnimationRenderer.KEY_ANIMATION_RENDERER] = (self.__init_animation_renderer())
+        self.renderers[PageIndicatorRenderer.KEY_PAGE_INDICATOR_RENDERER] = (self.__init_page_indicator_renderer())
+
         self.screen_controller.run()
         return
 
@@ -115,6 +118,9 @@ class MainRenderer:
 
     def __init_animation_renderer(self):
         return AnimationRenderer(self._get_renderer_config(), self.render_surface, "Assets/goal_light_animation.gif")
+
+    def __init_page_indicator_renderer(self):
+        return PageIndicatorRenderer(self._get_renderer_config(), self.render_surface)
 
     def _get_renderer_config(self):
         return RendererConfig(self.screen_config, self.config)
@@ -192,3 +198,4 @@ class MainRenderer:
     def init_image(self):
         self.image = Image.new('RGB', (self.width, self.height))
         self.draw = ImageDraw.Draw(self.image)
+

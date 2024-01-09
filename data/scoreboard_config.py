@@ -44,4 +44,4 @@ class ScoreboardConfig:
         return reference_config
 
     def set_fav_teams(self, values):
-        return values.split(",")
+        return [int(v) for v in values.split(",")]

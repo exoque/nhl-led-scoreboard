@@ -40,8 +40,8 @@ class Renderer(ABC):
         x = center_text(self._get_text_length(font, text), self._get_center())
         self._render_text(draw, text, x, y, font)
 
-    def _render_left_text(self, draw, text, y, font=None):
-        self._render_text(draw, text, 1, y, font)
+    def _render_left_text(self, draw, text, y, padding=1, font=None):
+        self._render_text(draw, text, padding, y, font)
 
     def _render_right_text(self, draw, text, y, font=None):
         x = right_text(self._get_text_length(font, text), self._get_screen_width())

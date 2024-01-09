@@ -22,7 +22,7 @@ class GameRenderer(Renderer):
 
     def _do_render(self, image, draw, frame_time):
 
-        game_info = self.data.game
+        game_info = None if not self.data else self.data.game
 
         #self.__draw_team_logos(image, game_info.home_team_id, game_info.away_team_id)
 
@@ -60,12 +60,12 @@ class GameRenderer(Renderer):
     def is_finished(self):
         return self.current_item >= -1 #len(self.data[DataSource.KEY_GAME_STATS_UPDATE][1])
 
-    def __draw_team_logo(self, image, team_type, team_id):
+    def __draw_team_logo(self, image, team_type, team_id, custom_logo_pos=None):
         if not str(team_id) in self.config.screen_config.team_logos_pos:
             logging.warning("No logo configuration for team id %d found.", team_id)
             return
 
-        team_logo_pos = self.config.screen_config.team_logos_pos[str(team_id)][team_type]
+        team_logo_pos = custom_logo_pos if custom_logo_pos is not None else self.config.screen_config.team_logos_pos[str(team_id)][team_type]
         team_logo = Image.open('logos/{}.png'.format(self.teams[team_id].abbreviation))
         y_pos = team_logo_pos["y"] if self.is_finished() else team_logo_pos["y"] - 6
         image.paste(team_logo.convert("RGB"), (team_logo_pos["x"], y_pos))
@@ -87,8 +87,11 @@ class GameRenderer(Renderer):
     def _render_graphical_version(self, data, image, draw):
 
         if self.__is_off_day(data):
-            self.__draw_team_logo(image, 'away', self.config.app_config.fav_team_id[0])
-            self._render_text(draw, 'NO GAME\nTODAY', 28, 8)
+            team_logo_home_pos = self.config.screen_config.team_logos_pos[str(self.config.app_config.fav_team_ids[0])]['home']
+            team_logo_pos = {'y': team_logo_home_pos['y'], 'x': team_logo_home_pos['x'] - 12}
+
+            self.__draw_team_logo(image, 'away', self.config.app_config.fav_team_ids[0], team_logo_pos)
+            self._render_left_text(draw, 'NO GAME\nTODAY', 8, 2)
             return
 
         game_date = convert_time(data.game_date)
@@ -96,7 +99,7 @@ class GameRenderer(Renderer):
         logging.debug(data.game_status)
 
         if self.__is_pregame(data):
-            self.__draw_status_text(draw, self.__get_date_string(game_date), self.__get_pregame_time_or_status(data.game_status, data.time), 'VS')
+            self.__draw_status_text(draw, self.__get_date_string(game_date), self.__get_pregame_time_or_status(data.game_status, data.game_time), 'VS')
         elif self.__is_live_game(data):
             score = self.format_score(data)
             period = data.period

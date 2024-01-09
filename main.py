@@ -7,6 +7,7 @@ from utils import args, led_matrix_options
 from renderer.matrix_render_surface import MatrixRenderSurface
 from renderer.image_render_surface import ImageRenderSurface
 import logging
+import logging.handlers
 
 import tkinter as tk
 
@@ -40,7 +41,14 @@ args = args()
 # Check for led configuration arguments
 matrixOptions = led_matrix_options(args)
 
-logging.basicConfig(filename='nhl-led-scoreboard.log', level=logging.INFO)
+handler = logging.handlers.RotatingFileHandler('nhl-led-scoreboard.log', maxBytes=10485760, backupCount=50)
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    handlers=[handler])
+
+
 
 # Print some basic info on startup
 logging.info("{} - v{}".format(SCRIPT_NAME, SCRIPT_VERSION))

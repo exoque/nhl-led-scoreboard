@@ -72,13 +72,16 @@ class ScreenController:
             time.sleep(self.config.sleep_time)
 
     def update_data(self):
+        logging.info("Entered update_data, time: %d", self.frame_time)
         today = parse_today(self.config)
         current_date = self.config.data_needed[DataSource.KEY_GAMES]['date'] if DataSource.KEY_GAMES in self.config.data_needed and 'date' in self.config.data_needed[DataSource.KEY_GAMES] else None
         if today != current_date:
             self.data.reset()
             self.config.data_needed[DataSource.KEY_GAMES]['date'] = today
 
+        logging.info("Updating data, time: %d", self.frame_time)
         api_data = self.data_source.update_data(self.config.data_needed)
+        logging.info("Updated data, time: %d", self.frame_time)
 
         if api_data[DataSource.KEY_GAMES] is None:
             return

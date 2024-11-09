@@ -2,7 +2,7 @@ from datetime import datetime
 
 from PIL import Image, ImageFont, ImageDraw
 
-from data.data import Data
+from data.game_data import Data
 from data.data_source import DataSource
 from data.data_source_nhl import DataSourceNhl
 from renderer.boxscore_renderer import BoxscoreRenderer

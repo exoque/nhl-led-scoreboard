@@ -18,6 +18,7 @@ class DataSource(ABC):
     def __init__(self, config):
         self.config = config
         self.url = config.url
+        self.stats_url = config.stats_url
         self.last_update_time = None
         self.data = {}
 

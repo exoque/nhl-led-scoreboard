@@ -123,7 +123,7 @@ def deep_update(source, overrides):
 
 def convert_time(utc_dt):
     local_dt = datetime.strptime(utc_dt, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.utc).astimezone(local_tz)
-    return local_tz.normalize(local_dt)  # .normalize might be unnecessary
+    return local_dt #local_tz.normalize(local_dt)  # .normalize might be unnecessary
 
 
 def parse_today(config):
@@ -132,5 +132,5 @@ def parse_today(config):
                                                                        day=today.day)
     if end_of_day > datetime.now():
         today -= timedelta(days=1)
-    return "2020-2-22"
-    #return "{}-{}-{}".format(today.year, today.month, today.day)
+    #return "2020-2-22"
+    return "{}-{}-{}".format(today.year, today.month, today.day)

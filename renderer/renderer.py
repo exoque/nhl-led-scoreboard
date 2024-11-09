@@ -53,7 +53,7 @@ class Renderer(ABC):
                             align="center")
 
     def _get_text_length(self, font, text):
-        return self.__get_font(font).getsize(str(text))[0]
+        return self.__get_font(font).getbbox(str(text))[2]
 
     def _get_center(self):
         return self._get_screen_width() / 2

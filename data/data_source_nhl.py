@@ -1,6 +1,8 @@
+import datetime
 import re
 import time
-from collections import Iterable
+from collections.abc import Iterable
+#from collections import Iterable
 
 from data.data_source import DataSource
 from data.event import EventGoals, EventPlayer, Event, EventResult, EventAbout
@@ -17,44 +19,52 @@ class DataSourceNhl(DataSource):
         super().__init__(config)
 
     def load_teams(self):
-        url = '{0}teams'.format(self.url)
+        url = '{0}franchise'.format(self.stats_url)
         result = self._execute_request(url)
         teams = {}
 
-        if result is None or 'teams' not in result:
+        if result is None or 'data' not in result:
             return None
 
-        for entry in result['teams']:
-            team = Team(entry['id'],
-                        entry['teamName'],
-                        entry['teamName'],
-                        entry['abbreviation'],
-                        entry['conference']['name'],
-                        entry['division']['name'])
-            teams[entry['id']] = team
+        for entry in result['data']:
+            if entry['lastSeasonId'] is None:
+                team = Team(entry['mostRecentTeamId'],
+                        entry['fullName'],
+                        entry['teamPlaceName'],
+                        entry['teamAbbrev'],
+                        'unknown',
+                        'unknown')
+                teams[entry['mostRecentTeamId']] = team
+
         return self.KEY_TEAMS, teams
 
     def load_game_info(self, key):
-        url = '{0}schedule?expand=schedule.linescore&gamePk={1}'.format(self.url, key)
+        url = '{0}score/{1}'.format(self.url, datetime.date.today().strftime('%Y-%m-%d'))
         result = self._execute_request(url)
 
-        if result is None or 'dates' not in result or len(result['dates']) == 0:
+        if result is None or 'games' not in result or len(result['games']) == 0:
             return self.KEY_GAME_INFO, None
 
-        dates = result['dates']
-        game = self._build_game(dates[0]['games'][0])
+        game = None
+        games = result['games']
+        for g in games:
+            if g['id'] == key:
+                game = g
+                break
+
+        game = self._build_game(game)
         self._update_time()
         return self.KEY_GAME_INFO, game
 
     def load_day_schedule(self, date):
-        url = '{0}schedule?expand=schedule.linescore&date={1}'.format(self.url, date)
+        converted_date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        url = '{0}score/{1}'.format(self.url, converted_date.strftime('%Y-%m-%d'))
         result = self._execute_request(url)
 
-        if result is None or 'dates' not in result or len(result['dates']) == 0:
+        if result is None or 'games' not in result or len(result['games']) == 0:
             return self.KEY_GAMES, None
 
-        dates = result['dates']
-        games = self._build_games(dates[0]['games'])
+        games = self._build_games(result['games'])
         self._update_time()
         return self.KEY_GAMES, games
 
@@ -261,28 +271,51 @@ class DataSourceNhl(DataSource):
         return game_list
 
     def _build_game(self, game):
+        period = None
+        game_time = None
+
         if 'linescore' in game:
             linescore = game['linescore']
-        else:
-            linescore = None
+            period = self.__get_current_period(linescore)
+            game_time = self.__get_current_period_time_remaining(linescore)
+        elif 'periodDescriptor' in game:
+            period = self.__get_period_text(str(game['periodDescriptor']['number']))
+            if 'clock' in game:
+                game_time = game['clock']['timeRemaining']
 
-        home_team = game['teams']['home']
-        away_team = game['teams']['away']
-        h_team = self.__build_game_team(game, 'home')
-        a_team = self.__build_game_team(game, 'away')
+        home_team = game['homeTeam']
+        away_team = game['awayTeam']
+        h_team = self.__build_game_team(game, 'homeTeam')
+        a_team = self.__build_game_team(game, 'awayTeam')
 
-        return Game(game['gamePk'],
-                    self.__get_current_period(linescore),
-                    self.__get_current_period_time_remaining(linescore),
-                    int(home_team['team']['id']),
-                    int(home_team['score']),
-                    int(away_team['team']['id']),
-                    int(away_team['score']),
-                    int(game['status']['statusCode']),
-                    game['gameDate'],
-                    convert_time(game['gameDate']).strftime("%I:%M"),
+        return Game(game['id'],
+                    period,
+                    game_time,
+                    int(home_team['id']),
+                    int(home_team['score'] if 'score' in home_team else 0),
+                    int(away_team['id']),
+                    int(away_team['score'] if 'score' in away_team else 0),
+                    self.__convert_game_state(game['gameState']),
+                    game['startTimeUTC'],
+                    convert_time(game['startTimeUTC']).strftime("%I:%M"),
                     h_team,
                     a_team)
+
+    #See bottom of game_renderer for codes
+    @staticmethod
+    def __convert_game_state(state):
+        if state == 'OFF':
+            return 7
+        elif state == 'PRE':
+            return 1
+        elif state == 'FUT':
+            return 1
+        elif state == 'LIVE':
+            return 3
+        elif state == 'FINAL':
+            return 5
+        else:
+            return 0
 
     @staticmethod
     def __get_current_period_time_remaining(linescore):
@@ -322,31 +355,11 @@ class DataSourceNhl(DataSource):
         else:
             linescore_team = None
 
-        team = game['teams'][team_type]
-        league_record = team['leagueRecord']
-
-        if linescore is not None:
-            stats = GameTeamStats(linescore_team['goals'],
-                                  linescore_team['shotsOnGoal'],
-                                  linescore_team['goaliePulled'],
-                                  linescore_team['numSkaters'],
-                                  linescore_team['powerPlay'])
-
-            shootout = GameTeamShootoutInfo(linescore['shootoutInfo'][team_type]['scores'],
-                                            linescore['shootoutInfo'][team_type]['attempts'])
-        else:
-            stats = None
-            shootout = None
-
-        record = GameTeamLeagueRecord(league_record['wins'],
-                                      league_record['losses'],
-                                      league_record['ot'] if 'ot' in league_record else 0)
-
-        team = GameTeam(int(team['team']['id']),
-                        team['team']['name'],
-                        stats,
-                        record,
-                        shootout)
+        team = GameTeam(int(game[team_type]['id']),
+                        game[team_type]['abbrev'],
+                        'unknown',
+                        'unknown',
+                        'unknown')
         return team
 
     @staticmethod

@@ -2,8 +2,10 @@
     "end_of_day": "14:00",
     "debug": false,
     "fav_team_ids": "5",
-    "url": "http://statsapi.web.nhl.com/api/v1/",
-    "debug_url": "http://localhost:8080/",
+    "url": "https://api-web.nhle.com/v1/",
+    "stats_url": "https://records.nhl.com/site/api/",
+    "debug_url": "https://api-web.nhle.com/v1/",
+    "debug_stats_url": "https://records.nhl.com/site/api/",
     "image_output_file": "/home/ch/Pictures/nhl-scoreboard.png",
     "debug_output": true,
     "update_rate": 10
